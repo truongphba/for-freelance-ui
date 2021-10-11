@@ -17,24 +17,16 @@
           v-bind:style="$q.platform.is.mobile?{'width': '80%'}:{'width':'30%'}"
         >
           <q-card-section>
-            <h4 class="text-center my-font text-weight-bold">Login to For Freelance</h4>
+            <h4 class="text-center my-font text-weight-bold">Get your free account</h4>
             <q-form class="q-gutter-md" @submit="login">
               <div class="text-red text-body1 text-center">{{ this.error }}</div>
+              <q-input filled v-model="fullName" label="Full Name" lazy-rules/>
               <q-input filled v-model="email" label="Email" lazy-rules/>
-
               <q-input type="password" filled v-model="password" label="Password" lazy-rules/>
-
               <div>
-                <q-btn label="Login" rounded type="submit" color="primary"  class="full-width bg-yellow-9"/>
+                <q-btn label="Register" rounded type="submit" color="primary" class="full-width bg-yellow-9"/>
               </div>
             </q-form>
-          </q-card-section>
-          <q-separator inset />
-          <q-card-section>
-            <p class="text-center text-blue-grey-13">Don't have an FFLance account?</p>
-            <div class="text-center">
-              <q-btn label="Signup" rounded outline  type="submit" color="yellow-9"  class="q-px-xl" to="register"/>
-            </div>
           </q-card-section>
         </q-card>
       </q-page>
@@ -206,7 +198,5 @@ export default {
 .login-form {
   position: absolute;
 }
-q-page-container{
 
-}
 </style>

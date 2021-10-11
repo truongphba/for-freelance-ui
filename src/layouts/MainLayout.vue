@@ -1,157 +1,35 @@
 <template>
   <q-layout view="lHh LpR lFf">
-    <q-header reveal elevated class="bg-primary">
-      <q-toolbar>
-        <q-btn @click="left = !left" flat round dense icon="menu" class="q-mr-sm"/>
-        <q-toolbar-title>{{ $route.meta.title }}</q-toolbar-title>
-        <q-btn
-          class="q-mr-xs"
-          flat
-          round
-          @click="$q.dark.toggle()"
-          :icon="$q.dark.isActive ? 'nights_stay' : 'wb_sunny'"
-        />
-        <q-btn flat round dense icon="fas fa-sign-out-alt" @click="signOut"/>
-      </q-toolbar>
-
-    </q-header>
-    <q-drawer
-      class="left-navigation text-white"
-      show-if-above
-      v-model="left"
-      side="left"
-      elevated
-    >
-      <div style="height: calc(100% - 117px);padding:10px">
-        <q-toolbar>
-          <q-avatar>
-          </q-avatar>
-          <q-toolbar-title>Excellon</q-toolbar-title>
-        </q-toolbar>
-        <hr/>
-        <q-scroll-area style="height:100%;">
-          <q-list padding>
-            <q-item v-if="user.departmentId === 1"
-              active-class="tab-active"
-              exact
-              :to="{name: 'dashboard'}"
-              class="q-ma-sm navigation-item"
-              clickable
-              v-ripple
-            >
-              <q-item-section avatar>
-                <q-icon name="dashboard"/>
-              </q-item-section>
-
-              <q-item-section>Dashboard</q-item-section>
-            </q-item>
-            <q-item v-if="user.departmentId === 1 || user.departmentId === 3"
-              active-class="tab-active"
-              :to="{name: 'departments'}"
-              class="q-ma-sm navigation-item"
-              clickable
-              v-ripple
-            >
-              <q-item-section avatar>
-                <q-icon name="fas fa-user-tag"/>
-              </q-item-section>
-
-              <q-item-section>Department</q-item-section>
-            </q-item>
-            <q-item v-if="user.departmentId === 1 || user.departmentId === 3"
-              active-class="tab-active"
-              :to="{name: 'employees'}"
-              class="q-ma-sm navigation-item"
-              clickable
-              v-ripple
-            >
-              <q-item-section avatar>
-                <q-icon name="fas fa-users"/>
-              </q-item-section>
-
-              <q-item-section>Employee</q-item-section>
-            </q-item>
-            <q-item v-if="user.departmentId === 1"
-              active-class="tab-active"
-              :to="{name: 'services'}"
-              class="q-ma-sm navigation-item"
-              clickable
-              v-ripple
-            >
-              <q-item-section avatar>
-                <q-icon name="fas fa-globe"/>
-              </q-item-section>
-
-              <q-item-section>Service</q-item-section>
-            </q-item>
-            <q-item v-if="user.departmentId === 1 || user.departmentId === 2"
-              active-class="tab-active"
-              :to="{name: 'clients'}"
-              class="q-ma-sm navigation-item"
-              clickable
-              v-ripple
-            >
-              <q-item-section avatar>
-                <q-icon name="fas fa-user-friends"/>
-              </q-item-section>
-
-              <q-item-section>Client</q-item-section>
-            </q-item>
-            <q-item v-if="user.departmentId === 1 || user.departmentId === 2"
-              active-class="tab-active"
-              :to="{name: 'products'}"
-              class="q-ma-sm navigation-item"
-              clickable
-              v-ripple
-            >
-              <q-item-section avatar>
-                <q-icon name="fas fa-luggage-cart"/>
-              </q-item-section>
-
-              <q-item-section>Products</q-item-section>
-            </q-item>
-            <q-item v-if="user.departmentId === 1 || user.departmentId === 4"
-              active-class="tab-active"
-              :to="{name: 'payments'}"
-              class="q-ma-sm navigation-item"
-              clickable
-              v-ripple
-            >
-              <q-item-section avatar>
-                <q-icon name="fas fa-money-check-alt"/>
-              </q-item-section>
-
-              <q-item-section>Payment</q-item-section>
-            </q-item>
-            <q-item v-if="user.departmentId === 1 || user.departmentId === 4"
-                    active-class="tab-active"
-                    :to="{name: 'contacts'}"
-                    class="q-ma-sm navigation-item"
-                    clickable
-                    v-ripple
-            >
-              <q-item-section avatar>
-                <q-icon name="fas fa-id-card"/>
-              </q-item-section>
-
-              <q-item-section>Contacts</q-item-section>
-            </q-item>
-          </q-list>
-        </q-scroll-area>
-      </div>
-    </q-drawer>
-
-    <q-page-container>
-      <q-page class="row no-wrap">
+    <q-header elevated class="bg-yellow-9 text-white">
+      <div class="row">
         <div class="col">
-          <div class="full-height">
-            <q-scroll-area class="col q-pr-sm full-height" visible>
-              <router-view/>
-            </q-scroll-area>
-          </div>
+          <q-toolbar>
+            <q-toolbar-title>
+              <q-avatar>
+                <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
+              </q-avatar>
+              FFLance
+            </q-toolbar-title>
+          </q-toolbar>
         </div>
-      </q-page>
+        <div class="col">
+          <q-toolbar style="justify-content: right">
+            <q-btn label="Login" rounded type="submit" outline color="white" class="text-white q-px-lg q-mx-sm"/>
+            <q-btn label="Signup" rounded type="submit" color="white" class="text-yellow-9 q-px-lg q-mx-sm"/>
+          </q-toolbar>
+        </div>
+      </div>
+    </q-header>
+    <q-page-container class="container">
+      <router-view/>
     </q-page-container>
+    <q-footer elevated class="bg-dark text-white">
+      <q-toolbar>
+        <q-toolbar-title class="text-center" style="font-size: 12px">
+          © 2021 FFLance® Global Inc.
+        </q-toolbar-title>
+      </q-toolbar>
+    </q-footer>
   </q-layout>
 </template>
 
@@ -212,8 +90,8 @@ export default {
 .tab-active {
   background-color: #1976d2;
 }
-
-body {
-  background: #f1f1f1 !important;
+.container{
+  max-width: 70%;
+  margin: auto;
 }
 </style>

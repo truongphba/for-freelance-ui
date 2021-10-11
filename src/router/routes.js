@@ -5,6 +5,11 @@ const routes = [
     name: 'login',
     component: () => import('pages/Login.vue')
   },
+  {
+    path: '/register',
+    name: 'register',
+    component: () => import('pages/Register.vue')
+  },
 
   // Đăng xuất
   {
@@ -22,16 +27,16 @@ const routes = [
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
     meta: {
-      requiresAuth: true
+      requiresAuth: false
     },
     children: [
       {
         path: '',
         meta: {
-          title: 'Thống kê'
+          title: 'Homepage'
         },
-        name: 'dashboard',
-        component: () => import('pages/Dashboard.vue')
+        name: 'homepage',
+        component: () => import('pages/Homepage.vue')
       },
       {
         path: 'categories',
