@@ -1,9 +1,18 @@
 <template>
   <q-card  style="margin: 50px auto;width: 60%; padding: 20px">
     <div>
-      <div style="height: 500px;overflow-y: auto">
-        <p  v-for="message in messages"
-            :key="message.id"><span style="font-weight: bold">{{ message.username }}: </span> {{ message.text }}</p>
+      <div style="height: 500px;overflow-y: auto; display: flex;
+  justify-content: flex-end;
+  flex-direction: column;">
+        <div  v-for="message in messages"
+        :key="message.id" >
+          <div v-if="message.username == userName" style="float: right">
+              <p class="bg-purple-6 q-pa-sm text-white" style="border-radius: 5px;display: inline-block">{{ message.text }}</p>
+          </div>
+          <div v-else>
+              <p class="bg-cyan-8 q-pa-sm text-white" style="border-radius: 5px;display: inline-block">{{ message.text }}</p>
+          </div>
+        </div>
       </div>
       <div class="row">
         <div class="col-md-9">
@@ -39,7 +48,7 @@ export default {
     sendMessage () {
       const message = {
         text: this.showMessage,
-        username: this.$route.params.name
+        username: this.userName
       }
       fire
         .database()
@@ -49,6 +58,7 @@ export default {
     }
   },
   mounted () {
+    this.userName = this.$route.params.name
     const viewMessage = this
     console.log(this.$route.params.roomid)
     const itemsRef = fire.database().ref('room/' + this.$route.params.roomid)
