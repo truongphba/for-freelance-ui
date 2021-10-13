@@ -109,6 +109,14 @@ const routes = [
         },
         name: 'orders',
         component: () => import('pages/Order.vue')
+      },
+      {
+        path: 'freelancers',
+        meta: {
+          title: 'Freelancers'
+        },
+        name: 'freelancers',
+        component: () => import('pages/Freelancers.vue')
       }
     ]
   }
