@@ -8,7 +8,7 @@
           Take your career to the next level.</p>
         <div class="row">
           <div class="col-8">
-            <q-input outlined color="yellow-9" v-model="text" label="Some name, skill,..."/>
+            <q-input outlined color="yellow-9" v-model="search" label="Some name, skill,..."/>
           </div>
           <div class="col-4">
             <q-btn label="Find Talent" rounded type="submit" size="20px" color="yellow-9"

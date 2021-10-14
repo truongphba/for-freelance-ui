@@ -2,29 +2,30 @@ import axios from 'axios'
 import { httpClient } from 'src/api/http'
 
 export async function authRequest ({ commit, dispatch }, user) {
-  const querystring = require('querystring')
-
   return new Promise((resolve, reject) => {
     commit('authBegin')
     axios({
       url: process.env.SOURCE_URL + '/login',
-      data: querystring.stringify({ grant_type: 'password', userName: user.username, password: user.password }),
+      data: JSON.stringify({ email: user.email, password: user.password }),
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        Accept: 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
       }
     })
       .then(async resp => {
         const data = resp.data
-        await localStorage.setItem(process.env.TOKEN_NAME, data.access_token)
-        axios.defaults.headers.common.Authorization = 'Bearer ' + data.access_token
-        const response = await httpClient.get('/Employee/EmployeeInfo')
-        console.log(response)
-        commit('authSuccess', {
-          token: data.access_token,
-          user: response
-        })
-        resolve(resp)
+        await localStorage.setItem(process.env.TOKEN_NAME, data.accessToken)
+        axios.defaults.headers.common.Authorization = 'Bearer ' + data.accessToken
+        axios.get(process.env.API_URL + '/users/infomation')
+          .then(function (response) {
+            console.log(response)
+          })
+        // commit('authSuccess', {
+        //   token: data.accessToken,
+        //   user: response
+        // })
+        // resolve(resp)
       })
       .catch(err => {
         commit('authError', err)
@@ -33,7 +34,25 @@ export async function authRequest ({ commit, dispatch }, user) {
       })
   })
 }
-
+export async function register ({ commit, dispatch }, user) {
+  return new Promise((resolve, reject) => {
+    axios({
+      url: process.env.SOURCE_URL + '/register',
+      data: JSON.stringify({ email: user.email, password: user.password, username: user.username }),
+      method: 'POST',
+      headers: {
+        Accept: 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
+      }
+    })
+      .then(async resp => {
+        resolve(resp)
+      })
+      .catch(err => {
+        reject(err)
+      })
+  })
+}
 export async function logout ({ commit }) {
   if (localStorage.getItem(process.env.TOKEN_NAME)) {
     try {

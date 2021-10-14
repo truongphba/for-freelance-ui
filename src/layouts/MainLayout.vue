@@ -13,7 +13,7 @@
           </q-toolbar>
         </div>
         <div class="col">
-          <q-toolbar style="justify-content: right" v-if="!isLogin">
+          <q-toolbar style="justify-content: right" v-if="Object.keys(user).length === 0">
             <q-btn label="Login" rounded type="submit" outline color="white" class="text-white q-px-lg q-mx-sm" to="/login"/>
             <q-btn label="Signup" rounded type="submit" color="white" class="text-yellow-9 q-px-lg q-mx-sm" to="/register"/>
           </q-toolbar>
@@ -77,7 +77,6 @@ export default {
       iconArrow: null,
       show: null,
       permission: {},
-      isLogin: 1,
       isFreeLancer: 0
     }
   },
