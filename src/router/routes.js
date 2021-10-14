@@ -53,6 +53,14 @@ const routes = [
         },
         name: 'chat',
         component: () => import('pages/Chat.vue')
+      },
+      {
+        path: '/job/:jobid',
+        meta: {
+          title: 'Detail job'
+        },
+        name: 'detail',
+        component: () => import('pages/DetailJob.vue')
       }
       // {
       //   path: 'categories',
