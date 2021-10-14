@@ -27,13 +27,13 @@
           <div class="col-4" style="border-right: solid 1px">
             <div style="padding-inline: 20px">
               <div style="margin: 5px 0; font-size: 16px">
-                <span><strong>Gender: </strong></span>{{freelancer.gender}}
+                <span><strong>Gender: </strong></span>{{ freelancer.gender }}
               </div>
               <div style="margin: 5px 0; font-size: 16px">
-                <span><strong>Experience: </strong></span>{{freelancer.experience}}
+                <span><strong>Experience: </strong></span>{{ freelancer.experience }}
               </div>
               <div style="margin: 5px 0; font-size: 16px">
-                <span><strong>Average Income: </strong></span>{{freelancer.averageIncome}}$/h
+                <span><strong>Average Income: </strong></span>{{ freelancer.averageIncome }}$/h
               </div>
             </div>
             <hr>
@@ -55,12 +55,113 @@
             </div>
             <hr>
           </div>
-          <div class="col-6" style="padding-inline: 20px">
-            <div style="margin: 5px 0; font-size: 24px">
-              <strong>{{freelancer.title}}</strong>
+          <div class="col-8">
+            <div style="margin: 5px 0; font-size: 24px; padding-inline: 20px">
+              <strong>{{ freelancer.title }}</strong>
             </div>
-            <div style="width: 480px; font-size: 16px">
+            <div style="width: 480px; font-size: 16px; padding-inline: 20px">
               {{ freelancer.description }}
+            </div>
+            <hr>
+            <div>
+              <div style="font-size: 24px; padding-inline: 20px">
+                <strong>Work History</strong>
+              </div>
+              <div style="margin-top: 50px">
+                <div class="q-gutter-y-md">
+                  <q-card>
+                    <q-tabs
+                      v-model="tab"
+                      dense
+                      class="text-grey"
+                      active-color="primary"
+                      indicator-color="primary"
+                      align="justify"
+                      narrow-indicator
+                    >
+                      <q-tab name="completed" label="Completed Jobs"/>
+                      <q-tab name="in_progress" label="In Progress"/>
+                    </q-tabs>
+
+                    <q-separator/>
+
+                    <q-tab-panels v-model="tab" animated>
+                      <q-tab-panel name="completed" style="line-height: 3">
+                        <div>
+                          <div class="text-h6">Need experienced React Engineer — Data Analytics — US venture-funded startup</div>
+                          <div>Rate: 5.00 - Aug 30, 2021 - Sep 2, 2021</div>
+                          <div class="row mt-20 mt-lg-10">
+                            <div class="col-4">
+                              <strong>$1,600.00</strong>
+                            </div>
+                            <div class="col-4">
+                              <strong>$40.00</strong>
+                              <span>/ hr</span></div>
+                            <div class="col-4">
+                              <strong>40</strong>
+                              <span>hours</span>
+                            </div> <!---->
+                          </div>
+                        </div>
+                        <hr>
+                        <div>
+                          <div class="text-h6">Need experienced React Engineer — Data Analytics — US venture-funded startup</div>
+                          <div>Rate: 5.00 - Aug 30, 2021 - Sep 2, 2021</div>
+                          <div class="row mt-20 mt-lg-10">
+                            <div class="col-4">
+                              <strong>$1,600.00</strong>
+                            </div>
+                            <div class="col-4">
+                              <strong>$40.00</strong>
+                              <span>/ hr</span></div>
+                            <div class="col-4">
+                              <strong>40</strong>
+                              <span>hours</span>
+                            </div> <!---->
+                          </div>
+                        </div>
+                        <hr>
+                        <div>
+                          <div class="text-h6">Need experienced React Engineer — Data Analytics — US venture-funded startup</div>
+                          <div>Rate: 5.00 - Aug 30, 2021 - Sep 2, 2021</div>
+                          <div class="row mt-20 mt-lg-10">
+                            <div class="col-4">
+                              <strong>$1,600.00</strong>
+                            </div>
+                            <div class="col-4">
+                              <strong>$40.00</strong>
+                              <span>/ hr</span></div>
+                            <div class="col-4">
+                              <strong>40</strong>
+                              <span>hours</span>
+                            </div> <!---->
+                          </div>
+                        </div>
+                      </q-tab-panel>
+
+                      <q-tab-panel name="in_progress">
+                        <div>
+                          <div class="text-h6">Need experienced React Engineer — Data Analytics — US venture-funded startup</div>
+                          <div>Rate: 5.00 - Aug 30, 2021 - Sep 2, 2021</div>
+                          <div class="row mt-20 mt-lg-10">
+                            <div class="col-4">
+                              <strong>$1,600.00</strong>
+                            </div>
+                            <div class="col-4">
+                              <strong>$40.00</strong>
+                              <span>/ hr</span></div>
+                            <div class="col-4">
+                              <strong>40</strong>
+                              <span>hours</span>
+                            </div> <!---->
+                          </div>
+                        </div>
+                      </q-tab-panel>
+
+                    </q-tab-panels>
+                  </q-card>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -79,7 +180,8 @@ export default {
   },
   data () {
     return {
-      freelancer: {}
+      freelancer: {},
+      tab: 'completed'
     }
   },
   methods: {
@@ -114,6 +216,7 @@ export default {
   border-radius: 50%;
   --size: 80px !important;
 }
+
 .freelancer-name {
   font-size: 24px;
   margin-bottom: 5px;

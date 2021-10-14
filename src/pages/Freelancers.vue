@@ -26,19 +26,19 @@
                 </div>
                 <div class="flex">
                   <div style="margin-right: 24px;">
-                    <p>
+                    <div>
                       <strong> {{freelancer.averageIncome}} </strong>
                       <span aria-label="per hour"> /hr</span>
-                    </p>
-                    <p>Average rate</p>
+                    </div>
+                    <div>Average rate</div>
                   </div>
                   <div style="margin-right: 24px;">
-                    <p><strong> $8,940.84 </strong></p>
-                    <p>Total earnings</p>
+                    <div><strong> $8,940.84 </strong></div>
+                    <div>Total earnings</div>
                   </div>
                   <div style="margin-right: 24px;">
-                    <p><strong> {{ freelancer.rate }} </strong></p>
-                    <p>Rated</p>
+                    <div><strong> {{ freelancer.rate }} </strong></div>
+                    <div>Rated</div>
                   </div>
                 </div>
               </div>
