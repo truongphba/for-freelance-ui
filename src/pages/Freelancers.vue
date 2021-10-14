@@ -5,21 +5,21 @@
       <div id="freelancers-project">
         <div id="freelancers">
           <h5>Get proposals from talent like this</h5>
-          <div>
+          <div v-for="freelancer in freelancers" :key="freelancer.id">
             <div style="margin-bottom: 24px;">
               <div itemscope="itemscope" itemtype="http://schema.org/Person">
                 <div class="flex">
                   <div><img class="avatar"
-                            src="https://www.upwork.com/profile-portraits/c1r2xSNC9gGbTgcYBA1f5Vt81p2u8aXLa_Hszw7b5XE6zMy4OxtKdG1f6AUXTb2M3e"
+                            :src="freelancer.thumbnail"
                             alt="Avatar"></div>
                   <div style="margin-left: 16px">
                     <div>
-                      <p class="freelancer-name" v-on:click.prevent="showPanel">Dylan G.</p>
+                      <p class="freelancer-name" v-on:click.prevent="showPanel(freelancer.id)">{{freelancer.name}}</p>
                       <slideout-panel></slideout-panel>
                     </div>
                     <div class="text-muted">
                       <p style="font-size: 16px">
-                        Expert Web Developer | Graphic Designer | Integration Specialist
+                        {{ freelancer.language }}
                       </p>
                     </div>
                   </div>
@@ -27,7 +27,7 @@
                 <div class="flex">
                   <div style="margin-right: 24px;">
                     <p>
-                      <strong> $100.00 </strong>
+                      <strong> {{freelancer.averageIncome}} </strong>
                       <span aria-label="per hour"> /hr</span>
                     </p>
                     <p>Average rate</p>
@@ -37,8 +37,8 @@
                     <p>Total earnings</p>
                   </div>
                   <div style="margin-right: 24px;">
-                    <p><strong> 100% </strong></p>
-                    <p>Job success</p>
+                    <p><strong> {{ freelancer.rate }} </strong></p>
+                    <p>Rated</p>
                   </div>
                 </div>
               </div>
@@ -53,16 +53,35 @@
 
 <script>
 import FreelancerDetail from 'pages/FreelancerDetail'
+import axios from 'axios'
 export default {
   name: 'Freelancers',
+  data () {
+    return {
+      freelancers: []
+    }
+  },
   methods: {
-    showPanel () {
+    showPanel (id) {
       this.$showPanel({
         component: FreelancerDetail,
         openOn: 'right',
-        props: {}
+        width: '1200px',
+        props: {
+          freelancer_id: id
+        }
+      })
+    },
+    loadFreelancers () {
+      axios.get(process.env.API_URL + '/v1/freelancers', { headers: { Authorization: 'Bearer 056abcf5-5b4d-4639-847b-9058086999c5' } }).then(res => {
+        this.freelancers = res.data.data.list
+      }).catch(err => {
+        console.log(err)
       })
     }
+  },
+  created () {
+    this.loadFreelancers()
   }
 }
 </script>
