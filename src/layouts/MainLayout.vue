@@ -13,9 +13,43 @@
           </q-toolbar>
         </div>
         <div class="col">
-          <q-toolbar style="justify-content: right">
-            <q-btn label="Login" rounded type="submit" outline color="white" class="text-white q-px-lg q-mx-sm"/>
-            <q-btn label="Signup" rounded type="submit" color="white" class="text-yellow-9 q-px-lg q-mx-sm"/>
+          <q-toolbar style="justify-content: right" v-if="Object.keys(user).length === 0">
+            <q-btn label="Login" rounded type="submit" outline color="white" class="text-white q-px-lg q-mx-sm" to="/login"/>
+            <q-btn label="Signup" rounded type="submit" color="white" class="text-yellow-9 q-px-lg q-mx-sm" to="/register"/>
+          </q-toolbar>
+          <q-toolbar style="justify-content: right" v-else>
+              <q-avatar style="cursor: pointer">
+                <img src="~assets/images/no-ava.png">
+                <q-menu style="width: 200px">
+                  <q-list style="width: 200px">
+                    <q-item >
+                      <q-item-section>
+                        <p style="margin: 0">Hồng Trường</p>
+                        <template v-if="isFreeLancer">
+                          <p style="font-size: 13px;color: darkgray; margin: 0">Freelancer</p>
+                        </template>
+                        <template v-else>
+                          <router-link to="/register-freelancer" tag='p' style="font-size: 13px;color: darkgray; margin: 0; text-decoration: underline; cursor: pointer">Become Freelancer</router-link>
+                        </template>
+                      </q-item-section>
+                    </q-item>
+                    <q-separator />
+                    <q-item >
+                      <q-item-section>
+                        <p style="margin: 0"><q-icon style="margin-right: 10px" name="fas fa-wallet" />Balance: <span class="text-green">100$</span></p>
+                      </q-item-section>
+                    </q-item>
+                    <q-separator />
+                    <q-item clickable>
+                      <q-item-section><p style="margin: 0"><q-icon style="margin-right: 10px" name="fas fa-user-cog" /> Setting</p></q-item-section>
+                    </q-item>
+                    <q-separator />
+                    <q-item clickable>
+                      <q-item-section><p style="margin: 0"><q-icon style="margin-right: 10px" name="fas fa-sign-out-alt" /> Logout</p></q-item-section>
+                    </q-item>
+                  </q-list>
+                </q-menu>
+              </q-avatar>
           </q-toolbar>
         </div>
       </div>
@@ -42,7 +76,8 @@ export default {
       left: false,
       iconArrow: null,
       show: null,
-      permission: {}
+      permission: {},
+      isFreeLancer: 0
     }
   },
   async mounted () {

@@ -8,7 +8,7 @@
           Take your career to the next level.</p>
         <div class="row">
           <div class="col-8">
-            <q-input outlined color="yellow-9" v-model="text" label="Some name, skill,..."/>
+            <q-input outlined color="yellow-9" v-model="search" label="Some name, skill,..."/>
           </div>
           <div class="col-4">
             <q-btn label="Find Talent" rounded type="submit" size="20px" color="yellow-9"
@@ -101,6 +101,8 @@
                   <p style="color: white; font-size: 20px; margin-left: 20px">Explore different ways to earn</p>
                 </div>
               </div>
+              <q-btn label="Become Freelance" outline rounded type="submit" size="20px" color="white"
+                     class="q-px-lg" to="/register-freelancer"/>
             </div>
           </div>
          </div>
@@ -112,9 +114,9 @@
         <div class="col">
           <p class="hire-title">What they’re
              saying</p>
-          <div style="margin-left: 30%;margin-top: 100px;width: 400px">
+          <div style="margin-left: 30%;margin-top: 100px;width: 350px">
             <div>
-              <img src="https://www.upwork.com/static/assets/Brontes/c19d17f4/img/cara-2x.5343662.jpg" style="width: 100%; height: auto;border-radius: 10px">
+              <img src="~assets/images/feedback-1.webp" style="width: 100%; height: auto;border-radius: 10px">
             </div>
             <p class="feedback">“The freelance talent we work with are more productive than we ever thought possible.”</p>
             <div class="feedback-author">
@@ -124,9 +126,9 @@
           </div>
         </div>
         <div class="col">
-          <div style="margin-top: 20px;margin-left: 10%;width: 400px">
+          <div style="margin-top: 20px;margin-left: 10%;width: 350px">
             <div>
-              <img src="https://www.upwork.com/static/assets/Brontes/c19d17f4/img/sam.10e14e3.jpg" style="width: 100%; height: auto;border-radius: 10px">
+              <img src="~assets/images/feedback-2.webp" style="width: 100%; height: auto;border-radius: 10px">
             </div>
             <p class="feedback">“My relationship with Cara & CompuVision keeps on growing. The projects get larger and more technical every year.”</p>
             <div class="feedback-author">
