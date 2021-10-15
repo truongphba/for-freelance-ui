@@ -17,7 +17,7 @@
               </span>
             </div>
             <div style="font-size: 18px">
-              <star-rating :increment="0.5" :rating="freelancer.rate" v-bind:star-size="20"></star-rating>
+              <star-rating :read-only="true" :increment="0.5" :rating="freelancer.rate" v-bind:star-size="20"></star-rating>
             </div>
           </div>
         </div>
