@@ -17,7 +17,7 @@
               </span>
             </div>
             <div style="font-size: 18px">
-              <star-rating :value="freelancer.rate" :disabled="true"></star-rating>
+              <star-rating :increment="0.5" :rating="freelancer.rate" v-bind:star-size="20"></star-rating>
             </div>
           </div>
         </div>
@@ -174,7 +174,7 @@
 
 <script>
 import axios from 'axios'
-import StarRating from 'components/StarRating'
+import StarRating from 'vue-star-rating'
 
 export default {
   name: 'FreelancerDetail',
