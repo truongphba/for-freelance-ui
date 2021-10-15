@@ -1,5 +1,4 @@
 const routes = [
-  // Đăng nhập
   {
     path: '/login',
     name: 'login',
@@ -10,19 +9,11 @@ const routes = [
     name: 'register',
     component: () => import('pages/Register.vue')
   },
-
-  // Đăng xuất
   {
     path: '/logout',
     name: 'logout',
     component: () => import('pages/Logout.vue')
   },
-  {
-    path: '/landing',
-    name: 'landing',
-    component: () => import('pages/Landing.vue')
-  },
-  // admin
   {
     path: '/',
     component: () => import('layouts/MainLayout.vue'),
@@ -53,6 +44,14 @@ const routes = [
         },
         name: 'chat',
         component: () => import('pages/Chat.vue')
+      },
+      {
+        path: 'freelancers',
+        meta: {
+          title: 'Freelancers'
+        },
+        name: 'freelancers',
+        component: () => import('pages/Freelancers.vue')
       },
       {
         path: '/job/:jobid',

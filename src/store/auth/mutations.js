@@ -18,7 +18,7 @@ export function authError (state, err) {
 }
 
 export function authLogout (state) {
-  state.user = { email: { value: null, status: null } }
+  state.user = { }
   state.token = ''
   state.isLoggedIn = false
 }

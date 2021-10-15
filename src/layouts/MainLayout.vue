@@ -13,7 +13,7 @@
           </q-toolbar>
         </div>
         <div class="col">
-          <q-toolbar style="justify-content: right" v-if="!isLogin">
+          <q-toolbar style="justify-content: right" v-if="Object.keys(user).length === 0">
             <q-btn label="Login" rounded type="submit" outline color="white" class="text-white q-px-lg q-mx-sm" to="/login"/>
             <q-btn label="Signup" rounded type="submit" color="white" class="text-yellow-9 q-px-lg q-mx-sm" to="/register"/>
           </q-toolbar>
@@ -24,7 +24,7 @@
                   <q-list style="width: 200px">
                     <q-item >
                       <q-item-section>
-                        <p style="margin: 0">Hồng Trường</p>
+                        <p style="margin: 0">{{ user.username }}</p>
                         <template v-if="isFreeLancer">
                           <p style="font-size: 13px;color: darkgray; margin: 0">Freelancer</p>
                         </template>
@@ -36,7 +36,7 @@
                     <q-separator />
                     <q-item >
                       <q-item-section>
-                        <p style="margin: 0"><q-icon style="margin-right: 10px" name="fas fa-wallet" />Balance: <span class="text-green">100$</span></p>
+                        <p style="margin: 0"><q-icon style="margin-right: 10px" name="fas fa-wallet" />Balance: <span class="text-green">0$</span></p>
                       </q-item-section>
                     </q-item>
                     <q-separator />
@@ -45,7 +45,7 @@
                     </q-item>
                     <q-separator />
                     <q-item clickable>
-                      <q-item-section><p style="margin: 0"><q-icon style="margin-right: 10px" name="fas fa-sign-out-alt" /> Logout</p></q-item-section>
+                      <q-item-section @click="signOut"><p style="margin: 0"><q-icon style="margin-right: 10px" name="fas fa-sign-out-alt" /> Logout</p></q-item-section>
                     </q-item>
                   </q-list>
                 </q-menu>
@@ -68,7 +68,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 
 export default {
   data () {
@@ -77,7 +77,6 @@ export default {
       iconArrow: null,
       show: null,
       permission: {},
-      isLogin: 1,
       isFreeLancer: 0
     }
   },
@@ -87,9 +86,9 @@ export default {
     console.log(this.user)
   },
   methods: {
-    // ...mapActions({
-    //   authLogout: 'auth/logout'
-    // }),
+    ...mapActions({
+      authLogout: 'auth/logout'
+    }),
     signOut () {
       this.$store.dispatch('auth/logout')
         .then(() => {

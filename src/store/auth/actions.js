@@ -2,26 +2,24 @@ import axios from 'axios'
 import { httpClient } from 'src/api/http'
 
 export async function authRequest ({ commit, dispatch }, user) {
-  const querystring = require('querystring')
-
   return new Promise((resolve, reject) => {
     commit('authBegin')
     axios({
       url: process.env.SOURCE_URL + '/login',
-      data: querystring.stringify({ grant_type: 'password', userName: user.username, password: user.password }),
+      data: JSON.stringify({ email: user.email, password: user.password }),
       method: 'POST',
       headers: {
-        'Content-Type': 'application/x-www-form-urlencoded'
+        Accept: 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
       }
     })
       .then(async resp => {
         const data = resp.data
-        await localStorage.setItem(process.env.TOKEN_NAME, data.access_token)
-        axios.defaults.headers.common.Authorization = 'Bearer ' + data.access_token
-        const response = await httpClient.get('/Employee/EmployeeInfo')
-        console.log(response)
+        await localStorage.setItem(process.env.TOKEN_NAME, data.accessToken)
+        axios.defaults.headers.common.Authorization = 'Bearer ' + data.accessToken
+        const response = await httpClient.get('/users/information')
         commit('authSuccess', {
-          token: data.access_token,
+          token: data.accessToken,
           user: response
         })
         resolve(resp)
@@ -33,7 +31,19 @@ export async function authRequest ({ commit, dispatch }, user) {
       })
   })
 }
-
+export async function register ({ commit, dispatch }, user) {
+  return new Promise((resolve, reject) => {
+    axios({
+      url: process.env.SOURCE_URL + '/register',
+      data: JSON.stringify({ email: user.email, password: user.password, username: user.username }),
+      method: 'POST',
+      headers: {
+        Accept: 'application/json, text/plain, */*',
+        'Content-Type': 'application/json'
+      }
+    })
+  })
+}
 export async function logout ({ commit }) {
   if (localStorage.getItem(process.env.TOKEN_NAME)) {
     try {

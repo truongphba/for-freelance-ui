@@ -15,8 +15,10 @@ import employee from './employee'
 import service from './service'
 import client from './client'
 import payment from './payment'
+import VueSlideoutPanel from 'vue2-slideout-panel'
 
 Vue.use(Vuex)
+Vue.use(VueSlideoutPanel)
 
 export default function () {
   const store = new Vuex.Store({
