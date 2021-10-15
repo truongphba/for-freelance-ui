@@ -17,15 +17,12 @@ export async function authRequest ({ commit, dispatch }, user) {
         const data = resp.data
         await localStorage.setItem(process.env.TOKEN_NAME, data.accessToken)
         axios.defaults.headers.common.Authorization = 'Bearer ' + data.accessToken
-        axios.get(process.env.API_URL + '/users/infomation')
-          .then(function (response) {
-            console.log(response)
-          })
-        // commit('authSuccess', {
-        //   token: data.accessToken,
-        //   user: response
-        // })
-        // resolve(resp)
+        const response = await httpClient.get('/users/information')
+        commit('authSuccess', {
+          token: data.accessToken,
+          user: response
+        })
+        resolve(resp)
       })
       .catch(err => {
         commit('authError', err)
@@ -45,12 +42,6 @@ export async function register ({ commit, dispatch }, user) {
         'Content-Type': 'application/json'
       }
     })
-      .then(async resp => {
-        resolve(resp)
-      })
-      .catch(err => {
-        reject(err)
-      })
   })
 }
 export async function logout ({ commit }) {
