@@ -10,6 +10,7 @@
               <p class="bg-purple-6 q-pa-sm text-white" style="border-radius: 5px;display: inline-block">{{ message.text }}</p>
           </div>
           <div v-else>
+            <p style="font-size: 11px; color: darkgray; margin-bottom: 0">{{message.username}}</p>
               <p class="bg-cyan-8 q-pa-sm text-white" style="border-radius: 5px;display: inline-block">{{ message.text }}</p>
           </div>
         </div>
