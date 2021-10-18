@@ -1,6 +1,6 @@
 <template>
   <q-card style="margin: 50px auto;width: 60%; padding: 20px">
-    <q-card class="my-card bg-secondary text-white">
+    <q-card class="my-card">
       <q-card-section>
         <div class="text-h6">Wordpress designer - customize theme to create Gorgeous Business Consulting Website</div>
         <!--        <div class="text-subtitle2">by John Doe</div>-->
@@ -8,36 +8,51 @@
 
       <q-separator dark/>
       <div style="padding-inline: 50px">
-        <div class="text-h6" style="padding-block: 10px">Job Feedback</div>
-        <q-separator dark/>
-        <div class="text-amber-1" style="padding-block: 10px">
-          Client's feedback
-        </div>
-        <div v-for="(feedback,index) in clientFeedBacks" :key="index">
-          <q-rating
-              :value="feedback.rate"
-              size="2em"
-              :max="10"
-              color="green"
-          />
+        <div v-if="displayRate">
+          <div class="text-h6" style="padding-block: 10px">Job Feedback</div>
+          <q-separator dark/>
+          <div class="text-amber-1" style="padding-block: 10px">
+            Client's feedback
+          </div>
+          <div v-for="(feedback,index) in clientFeedBacks" :key="index">
+            <q-rating
+                :value="feedback.rate"
+                size="2em"
+                :max="10"
+                color="green"
+            />
 
-          <div v-html="feedback.feedback"></div>
+            <div v-html="feedback.feedback"></div>
+          </div>
         </div>
+        <q-input v-model="salary" style="max-width: 150px" label="Salary"></q-input>
+        <q-select style="max-width: 150px" v-model="jobStatus" :options="allJobStatus" label="Job Status"/>
 
         <q-separator dark style="margin-top: 10px"/>
         <div class="text-h6" style="padding-block: 10px">Detail job</div>
         <div class="text-subtitle1">
-          Job description
+          Job description :
         </div>
         <div class="text-body1" style="padding-left: 10px">
           {{ jobDescription }}
         </div>
         <div class="text-subtitle1">
-          Skill required
+          Skill required :
         </div>
         <q-chip dense color="primary" text-color="white" v-for="(value, index) in skills" :key="index">
           {{ value }}
         </q-chip>
+        <div class="text-subtitle1">
+          {{ isFreelancer ? 'Freelancer' : 'User' }} information :
+        </div>
+
+        <div class="text-subtitle2">
+          <div style="padding-left: 10px">
+            Name : {{ contactInfo.username }}
+            <br>
+            Email : {{ contactInfo.email }}
+          </div>
+        </div>
       </div>
 
       <q-separator dark/>
@@ -68,7 +83,42 @@ export default {
           feedback: '"Peter Griffin .\n Thanks"'
         }
       ],
-      messages: []
+      displayRate: false,
+      salary: 4000,
+      jobStatus: {
+        label: 'Pending',
+        value: 1
+      },
+      messages: [],
+      allJobStatus: [
+        {
+          label: 'Close',
+          value: 0
+        },
+        {
+          label: 'Pending',
+          value: 1
+        },
+        {
+          label: 'Doing',
+          value: 2
+        },
+        {
+          label: 'Review',
+          value: 3
+        },
+        {
+          label: 'Done',
+          value: 3
+        }
+      ],
+      isConfirmed: true,
+      contactInfo: {
+        username: 'Sunshine__Acid',
+        email: 'convitcon123@gmail.com',
+        phoneNumber: '01188299374'
+      },
+      isFreelancer: true
     }
   }
 }
