@@ -4,13 +4,13 @@
       <h3>See talent who match jobs like yours</h3>
       <div class="row">
         <div class="col-8">
-          <q-input outlined color="yellow-9" v-model="search" label="Some name, skill,..."/>
+          <q-input outlined color="yellow-9" v-model="searchQuery" label="Some name, skill,..."/>
         </div>
       </div>
       <div id="freelancers-project">
         <div id="freelancers">
           <h5>Get proposals from talent like this</h5>
-          <div v-for="freelancer in freelancers" :key="freelancer.id">
+          <div v-for="freelancer in filteredFreelancers" :key="freelancer.id">
             <div style="margin-bottom: 24px;">
               <div itemscope="itemscope" itemtype="http://schema.org/Person">
                 <div class="flex">
@@ -63,7 +63,8 @@ export default {
   name: 'Freelancers',
   data () {
     return {
-      freelancers: []
+      freelancers: [],
+      searchQuery: ''
     }
   },
   methods: {
@@ -79,8 +80,8 @@ export default {
       })
     },
     loadFreelancers () {
-      axios.get(process.env.API_URL + '/v1/freelancers', { headers: { Authorization: 'Bearer 056abcf5-5b4d-4639-847b-9058086999c5' } }).then(res => {
-        this.freelancers = res.data.data.list
+      axios.get('http://localhost:8088/v1/freelancers').then(res => {
+        this.freelancers = res.data.data
       }).catch(err => {
         console.log(err)
       })
@@ -88,6 +89,18 @@ export default {
   },
   created () {
     this.loadFreelancers()
+  },
+  computed: {
+    filteredFreelancers () {
+      if (this.searchQuery) {
+        return this.freelancers.filter((item) => {
+          return this.searchQuery.toLowerCase().split(' ').every(v => item.name.toLowerCase().includes(v)) ||
+          this.searchQuery.toLowerCase().split(' ').every(v => item.language.toLowerCase().includes(v))
+        })
+      } else {
+        return this.freelancers
+      }
+    }
   }
 }
 </script>
