@@ -192,7 +192,7 @@ export default {
   },
   methods: {
     loadFreelancer () {
-      axios.get(process.env.API_URL + '/v1/freelancers/' + this.freelancer_id, { headers: { Authorization: 'Bearer 056abcf5-5b4d-4639-847b-9058086999c5' } })
+      axios.get('http://localhost:8088/v1/freelancers/' + this.freelancer_id)
         .then(res => {
           this.freelancer = res.data.data
         }).catch(err => {
