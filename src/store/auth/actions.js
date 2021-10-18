@@ -41,7 +41,12 @@ export async function register ({ commit, dispatch }, user) {
         Accept: 'application/json, text/plain, */*',
         'Content-Type': 'application/json'
       }
+    }).then(async resp => {
+      resolve(resp)
     })
+      .catch(err => {
+        reject(err)
+      })
   })
 }
 export async function logout ({ commit }) {
