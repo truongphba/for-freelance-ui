@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div style="margin-top: 100px; margin-inline: 50px">
-      <div style="border: solid 1px;  border-radius: 5px">
+    <div style="margin: 76px 20px 60px">
+      <div style="border: solid 1px gainsboro;  border-radius: 5px; background: white">
         <div class="flex " style="padding: 20px;">
           <div><img class="avatar"
                     :src="freelancer.thumbnail"
@@ -17,15 +17,14 @@
               </span>
             </div>
             <div style="font-size: 18px">
-              <span style="margin-right: 10px">{{ freelancer.rate }} % </span>
-              <span>Rated</span>
+              <star-rating :read-only="true" :increment="0.5" :rating="freelancer.rate" v-bind:star-size="20"></star-rating>
             </div>
           </div>
         </div>
-        <hr style="margin: unset">
+        <hr style="margin: unset; border: 0.5px solid gainsboro;">
         <div class="row">
-          <div class="col-4" style="border-right: solid 1px">
-            <div style="padding-inline: 20px">
+          <div class="col-4" style="border-right: solid 1px gainsboro;">
+            <div style="padding-inline: 20px; line-height: 32px;">
               <div style="margin: 5px 0; font-size: 16px">
                 <span><strong>Gender: </strong></span>{{ freelancer.gender }}
               </div>
@@ -36,24 +35,24 @@
                 <span><strong>Average Income: </strong></span>{{ freelancer.averageIncome }}$/h
               </div>
             </div>
-            <hr>
+            <hr style="border: 0.5px solid gainsboro;">
             <div style="padding-inline: 20px">
-              <div class="flex" style="justify-content: space-around">
-                <div>
-                  <p><strong>10000 $</strong></p>
-                  <p>Total Earnings</p>
+              <div class="flex" style="justify-content: flex-start; line-height: 25px; font-size: 16px;">
+                <div style="margin-right: 20px;">
+                  <div><strong>10000 $</strong></div>
+                  <div>Total Earnings</div>
+                </div>
+                <div style="margin-right: 20px;">
+                  <div><strong>12</strong></div>
+                  <div>Total Jobs</div>
                 </div>
                 <div>
-                  <p><strong>12</strong></p>
-                  <p>Total Jobs</p>
-                </div>
-                <div>
-                  <p><strong>123</strong></p>
-                  <p>Total Hours</p>
+                  <div><strong>123</strong></div>
+                  <div>Total Hours</div>
                 </div>
               </div>
             </div>
-            <hr>
+            <hr style="border: 0.5px solid gainsboro;">
           </div>
           <div class="col-8">
             <div style="margin: 5px 0; font-size: 24px; padding-inline: 20px">
@@ -62,14 +61,14 @@
             <div style="width: 480px; font-size: 16px; padding-inline: 20px">
               {{ freelancer.description }}
             </div>
-            <hr>
+            <hr style="border: 0.5px solid gainsboro;">
             <div>
               <div style="font-size: 24px; padding-inline: 20px">
                 <strong>Work History</strong>
               </div>
               <div style="margin-top: 50px">
                 <div class="q-gutter-y-md">
-                  <q-card>
+                  <q-card style="box-shadow: unset">
                     <q-tabs
                       v-model="tab"
                       dense
@@ -89,8 +88,11 @@
                       <q-tab-panel name="completed" style="line-height: 3">
                         <div>
                           <div class="text-h6">Need experienced React Engineer — Data Analytics — US venture-funded startup</div>
-                          <div>Rate: 5.00 - Aug 30, 2021 - Sep 2, 2021</div>
-                          <div class="row mt-20 mt-lg-10">
+                          <div class="text-gray">Rate: 5.00 - Aug 30, 2021 - Sep 2, 2021</div>
+                          <div class="feedback">
+                            "The team stayed on budget and created exactly what we wanted. This was the second time I've used this freelancer, and won't be the last. Would recommend, with utmost confidence."
+                          </div>
+                          <div class="row mt-20 mt-lg-10 text-gray">
                             <div class="col-4">
                               <strong>$1,600.00</strong>
                             </div>
@@ -103,11 +105,12 @@
                             </div> <!---->
                           </div>
                         </div>
-                        <hr>
+                        <hr style="border: 0.5px solid gainsboro;">
                         <div>
                           <div class="text-h6">Need experienced React Engineer — Data Analytics — US venture-funded startup</div>
-                          <div>Rate: 5.00 - Aug 30, 2021 - Sep 2, 2021</div>
-                          <div class="row mt-20 mt-lg-10">
+                          <div class="text-gray">Aug 30, 2021 - Sep 2, 2021</div>
+                          <div class="text-gray">No feedback given</div>
+                          <div class="row mt-20 mt-lg-10 text-gray">
                             <div class="col-4">
                               <strong>$1,600.00</strong>
                             </div>
@@ -120,11 +123,11 @@
                             </div> <!---->
                           </div>
                         </div>
-                        <hr>
+                        <hr style="border: 0.5px solid gainsboro;">
                         <div>
                           <div class="text-h6">Need experienced React Engineer — Data Analytics — US venture-funded startup</div>
-                          <div>Rate: 5.00 - Aug 30, 2021 - Sep 2, 2021</div>
-                          <div class="row mt-20 mt-lg-10">
+                          <div class="text-gray">Rate: 5.00 - Aug 30, 2021 - Sep 2, 2021</div>
+                          <div class="row mt-20 mt-lg-10 text-gray">
                             <div class="col-4">
                               <strong>$1,600.00</strong>
                             </div>
@@ -142,8 +145,7 @@
                       <q-tab-panel name="in_progress">
                         <div>
                           <div class="text-h6">Need experienced React Engineer — Data Analytics — US venture-funded startup</div>
-                          <div>Rate: 5.00 - Aug 30, 2021 - Sep 2, 2021</div>
-                          <div class="row mt-20 mt-lg-10">
+                          <div class="row mt-20 mt-lg-10 text-gray">
                             <div class="col-4">
                               <strong>$1,600.00</strong>
                             </div>
@@ -172,9 +174,13 @@
 
 <script>
 import axios from 'axios'
+import StarRating from 'vue-star-rating'
 
 export default {
   name: 'FreelancerDetail',
+  components: {
+    StarRating
+  },
   props: {
     freelancer_id: Number
   },
@@ -220,5 +226,13 @@ export default {
 .freelancer-name {
   font-size: 24px;
   margin-bottom: 5px;
+}
+.feedback {
+  line-height: 2;
+  font-style: italic;
+  font-size: 16px
+}
+.text-gray{
+  color: gray;
 }
 </style>

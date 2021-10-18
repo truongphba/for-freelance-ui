@@ -2,6 +2,11 @@
   <div>
     <div>
       <h3>See talent who match jobs like yours</h3>
+      <div class="row">
+        <div class="col-8">
+          <q-input outlined color="yellow-9" v-model="search" label="Some name, skill,..."/>
+        </div>
+      </div>
       <div id="freelancers-project">
         <div id="freelancers">
           <h5>Get proposals from talent like this</h5>
@@ -19,24 +24,24 @@
                     </div>
                     <div class="text-muted">
                       <p style="font-size: 16px">
-                        {{ freelancer.language }}
+                        {{ freelancer.title }}
                       </p>
                     </div>
                   </div>
                 </div>
                 <div class="flex">
-                  <div style="margin-right: 24px;">
+                  <div class="info-income">
                     <div>
                       <strong> {{freelancer.averageIncome}} </strong>
                       <span aria-label="per hour"> /hr</span>
                     </div>
                     <div>Average rate</div>
                   </div>
-                  <div style="margin-right: 24px;">
+                  <div class="info-income">
                     <div><strong> $8,940.84 </strong></div>
                     <div>Total earnings</div>
                   </div>
-                  <div style="margin-right: 24px;">
+                  <div class="info-income">
                     <div><strong> {{ freelancer.rate }} </strong></div>
                     <div>Rated</div>
                   </div>
@@ -67,6 +72,7 @@ export default {
         component: FreelancerDetail,
         openOn: 'right',
         width: '1200px',
+        cssClass: 'detail-color',
         props: {
           freelancer_id: id
         }
@@ -109,5 +115,10 @@ export default {
 .freelancer-name:hover {
   cursor: pointer;
   color: #bd8585;
+}
+.info-income {
+  margin-right: 24px;
+  line-height: 25px;
+  font-size: 16px;
 }
 </style>
