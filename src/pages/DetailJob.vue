@@ -25,7 +25,7 @@
             <div v-html="feedback.feedback"></div>
           </div>
         </div>
-        <q-input v-model="salary" style="max-width: 150px" label="Salary"></q-input>
+        <q-input v-model="salary" style="max-width: 150px" label="Salary" :disable="isConfirmed"></q-input>
         <q-select style="max-width: 150px" v-model="jobStatus" :options="allJobStatus" label="Job Status"/>
 
         <q-separator dark style="margin-top: 10px"/>
