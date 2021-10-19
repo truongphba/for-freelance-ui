@@ -25,9 +25,19 @@
             <div v-html="feedback.feedback"></div>
           </div>
         </div>
-        <q-input v-model="salary" style="max-width: 150px" label="Salary" :disable="isConfirmed"></q-input>
-        <q-select style="max-width: 150px" v-model="jobStatus" :options="allJobStatus" label="Job Status"/>
-
+        <q-input v-model="salary" style="max-width: 150px" label="Salary" :disable="isConfirmed"
+                 v-if="isEditing"></q-input>
+        <div v-else>
+          <div class="text-subtitle1">
+            Salary : {{ jobDescription }}
+          </div>
+        </div>
+        <q-select style="max-width: 150px" v-model="jobStatus" :options="allJobStatus" label="Job Status" v-if="isEditing"/>
+        <div v-else>
+          <div class="text-subtitle1">
+            Current Job Status : {{ jobStatus.label }}
+          </div>
+        </div>
         <q-separator dark style="margin-top: 10px"/>
         <div class="text-h6" style="padding-block: 10px">Detail job</div>
         <div class="text-subtitle1">
@@ -113,6 +123,7 @@ export default {
         }
       ],
       isConfirmed: true,
+      isEditing: true,
       contactInfo: {
         username: 'Sunshine__Acid',
         email: 'convitcon123@gmail.com',
