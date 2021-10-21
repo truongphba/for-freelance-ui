@@ -2,23 +2,28 @@
   <div>
     <div style="margin: 76px 20px 60px">
       <div style="border: solid 1px gainsboro;  border-radius: 5px; background: white">
-        <div class="flex " style="padding: 20px;">
-          <div><img class="avatar"
-                    :src="freelancer.thumbnail"
-                    alt="Avatar"></div>
-          <div style="margin-left: 16px; ">
-            <div>
-              <p class="freelancer-name">{{ freelancer.name }}</p>
-            </div>
-            <div class="text-muted" style="margin-bottom: 5px">
-              <i class="fas fa-map-marker-alt"></i>
-              <span style="font-size: 18px">
+        <div class="flex">
+          <div class="flex " style="padding: 20px; width: 90%">
+            <div><img class="avatar"
+                      :src="freelancer.thumbnail"
+                      alt="Avatar"></div>
+            <div style="margin-left: 16px; ">
+              <div>
+                <p class="freelancer-name">{{ freelancer.name }}</p>
+              </div>
+              <div class="text-muted" style="margin-bottom: 5px">
+                <i class="fas fa-map-marker-alt"></i>
+                <span style="font-size: 18px">
                 {{ freelancer.address }}
               </span>
+              </div>
+              <div style="font-size: 18px">
+                <star-rating :read-only="true" :increment="0.5" :rating="freelancer.rate" v-bind:star-size="20"></star-rating>
+              </div>
             </div>
-            <div style="font-size: 18px">
-              <star-rating :read-only="true" :increment="0.5" :rating="freelancer.rate" v-bind:star-size="20"></star-rating>
-            </div>
+          </div>
+          <div style="padding-top: 5%;" v-if="access_token">
+            <button class="connect-btn" @click="prompt = true">Connect</button>
           </div>
         </div>
         <hr style="margin: unset; border: 0.5px solid gainsboro;">
@@ -169,6 +174,44 @@
         </div>
       </div>
     </div>
+    <q-dialog v-model="prompt" persistent>
+      <q-card style="min-width: 750px">
+        <q-card-section>
+          <div class="text-h4">Create Job</div>
+        </q-card-section>
+        <q-card-section class="q-pt-none">
+          <div class="text-h6">Subject</div>
+          <q-input dense v-model="job.subject" autofocus @keyup.enter="prompt = false" :rules="[val => !!val || 'Field is required']"/>
+          <div class="text-h6">Description</div>
+          <q-editor
+            v-model="job.description"
+            :definitions="{bold: {label: 'Bold', icon: null, tip: 'My bold tooltip'}}"
+            :rules="[val => !!val || 'Field is required']"
+          />
+          <div class="text-h6">Salary</div>
+          <q-input dense v-model="job.salary" autofocus @keyup.enter="prompt = false" type="number" min="0" :rules="[val => !!val || 'Field is required', val => val >= 0 || 'Salary must greater than 0']"/>
+          <div class="text-h6">Response Date</div>
+          <q-input filled v-model="job.response_date" mask="date" :rules="['date']">
+            <template v-slot:append>
+              <q-icon name="event" class="cursor-pointer">
+                <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
+                  <q-date v-model="job.response_date">
+                    <div class="row items-center justify-end">
+                      <q-btn v-close-popup label="Close" color="primary" flat />
+                    </div>
+                  </q-date>
+                </q-popup-proxy>
+              </q-icon>
+            </template>
+          </q-input>
+        </q-card-section>
+
+        <q-card-actions align="right" class="text-primary">
+          <q-btn flat label="Cancel" v-close-popup />
+          <q-btn flat label="Create Job" v-close-popup />
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -187,7 +230,15 @@ export default {
   data () {
     return {
       freelancer: {},
-      tab: 'completed'
+      tab: 'completed',
+      access_token: localStorage.getItem(process.env.TOKEN_NAME),
+      prompt: false,
+      job: {
+        subject: '',
+        description: '',
+        salary: 0,
+        response_date: ''
+      }
     }
   },
   methods: {
@@ -198,6 +249,9 @@ export default {
         }).catch(err => {
           console.log(err)
         })
+    },
+    test () {
+      console.log(123)
     }
   },
   created () {
@@ -234,5 +288,19 @@ export default {
 }
 .text-gray{
   color: gray;
+}
+.connect-btn {
+  background-color: #4CAF50;
+  border: none;
+  color: white;
+  padding: 5px 20px;
+  text-align: center;
+  text-decoration: none;
+  display: inline-block;
+  font-size: 16px;
+  border-radius: 20px;
+}
+.connect-btn:hover {
+  cursor: pointer;
 }
 </style>
