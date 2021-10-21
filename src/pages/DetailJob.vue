@@ -32,7 +32,8 @@
             Salary : {{ jobDescription }}
           </div>
         </div>
-        <q-select style="max-width: 150px" v-model="jobStatus" :options="allJobStatus" label="Job Status" v-if="isEditing"/>
+        <q-select style="max-width: 150px" v-model="jobStatus" :options="allJobStatus" label="Job Status"
+                  v-if="isEditing"/>
         <div v-else>
           <div class="text-subtitle1">
             Current Job Status : {{ jobStatus.label }}
@@ -75,6 +76,11 @@
 </template>
 
 <script>
+let accountId
+let freelancerId
+
+import axios from 'axios'
+
 export default {
   name: 'DetailJob',
   data () {
@@ -129,8 +135,68 @@ export default {
         email: 'convitcon123@gmail.com',
         phoneNumber: '01188299374'
       },
-      isFreelancer: true
+      isFreelancer: true,
+      myProfile: {}
     }
+  },
+  methods: {
+    loadFreelancer () {
+      axios.get(process.env.API_URL + '/job/' + this.$route.params.job_id, {
+        headers:
+            {
+              Authorization: 'Bearer fb71c24c-5560-4adf-b3f8-dd41638eb32a'
+            }
+      }).then(res => {
+        const data = res.data
+        freelancerId = data.freelancerId
+        accountId = data.accountId
+        this.salary = data.salary ?? 0
+        this.jobDescription = data.description ?? ''
+        this.jobStatus = this.allJobStatus.find(element => element.value === data.status)
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    getMyProfile () {
+      axios.get(process.env.API_URL + '/users/information', {
+        headers:
+            {
+              Authorization: 'Bearer fb71c24c-5560-4adf-b3f8-dd41638eb32a'
+            }
+      }).then(res => {
+        this.myProfile = res.data
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    getFreelancerProfile () {
+      axios.get(process.env.API_URL + '/freelancers/' + freelancerId, {
+        headers:
+            {
+              Authorization: 'Bearer fb71c24c-5560-4adf-b3f8-dd41638eb32a'
+            }
+      }).then(res => {
+        this.myProfile = res.data
+      }).catch(err => {
+        console.log(err)
+      })
+    },
+    getAccountProfile () {
+      axios.get(process.env.API_URL + '/account/' + accountId, {
+        headers:
+            {
+              Authorization: 'Bearer fb71c24c-5560-4adf-b3f8-dd41638eb32a'
+            }
+      }).then(res => {
+        this.myProfile = res.data
+      }).catch(err => {
+        console.log(err)
+      })
+    }
+  },
+  created () {
+    this.loadFreelancer()
+    this.getMyProfile()
   }
 }
 </script>
