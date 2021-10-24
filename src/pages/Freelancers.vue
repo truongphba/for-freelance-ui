@@ -64,7 +64,7 @@ export default {
   data () {
     return {
       freelancers: [],
-      searchQuery: ''
+      searchQuery: this.$route.query.search
     }
   },
   methods: {

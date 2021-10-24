@@ -19,13 +19,12 @@
       <q-card-section>
         <h4 class="font-owsald" style="margin-top: 20px; margin-bottom: 50px;text-align: center">Let’s get started. How would you like to tell us about yourself?</h4>
         <q-form
-          @submit="onSubmit"
         >
           <div class="q-gutter-md">
             <q-input
               color="yellow-9"
               outlined
-              v-model="title"
+              v-model="registerFreelancer.title"
               label="Tittle *"
               lazy-rules
               :rules="[ val => val && val.length > 0 || 'Please type something']"
@@ -36,7 +35,7 @@
               <q-input
                 color="yellow-9"
                 outlined
-                v-model="name"
+                v-model="registerFreelancer.name"
                 label="Your name *"
                 lazy-rules
                 :rules="[ val => val && val.length > 0 || 'Please type something']"
@@ -46,7 +45,7 @@
               <q-input
                 color="yellow-9"
                 outlined
-                v-model="address"
+                v-model="registerFreelancer.address"
                 label="Your Address *"
                 lazy-rules
                 :rules="[ val => val && val.length > 0 || 'Please type something']"
@@ -58,21 +57,21 @@
               <q-input
                 color="yellow-9"
                 outlined
-                v-model="phone"
+                v-model="registerFreelancer.phone"
                 label="Your Phone Number *"
                 lazy-rules
                 :rules="[ val => val && val.length > 0 || 'Please type something']"
               />
             </div>
             <div class="col">
-              <q-select  color="yellow-9" outlined v-model="gender" :options="genderOptions" label="Gender *" />
+              <q-select  color="yellow-9" outlined v-model="registerFreelancer.gender" :options="genderOptions" label="Gender *" />
             </div>
           </div>
           <div class="q-gutter-md">
             <q-input
               color="yellow-9"
               label="Your Experience *"
-              v-model="experience"
+              v-model="registerFreelancer.experience"
               outlined
               type="textarea"
               lazy-rules
@@ -83,7 +82,7 @@
             <q-input
               color="yellow-9"
               label="Your Description *"
-              v-model="description"
+              v-model="registerFreelancer.description"
               outlined
               type="textarea"
               lazy-rules
@@ -94,7 +93,7 @@
             <q-input
               color="yellow-9"
               label="Your AVG Earning *"
-              v-model="money"
+              v-model="registerFreelancer.averageIncome"
               outlined
               prefix="$"
               type="number"
@@ -106,7 +105,7 @@
             <q-select
               outlined
               color="yellow-9"
-              v-model="skill"
+              v-model="registerFreelancer.language"
               use-input
               input-debounce="0"
               label="Skill"
@@ -126,7 +125,7 @@
             </q-select>
           </div>
           <div class="text-center">
-            <q-btn label="Register" rounded type="submit" size="20px" color="yellow-9"
+            <q-btn label="Register" @click="submit" rounded type="button" size="20px" color="yellow-9"
                    class="q-px-xl q-mt-xl"/>
           </div>
         </q-form>
@@ -136,6 +135,7 @@
 </template>
 
 <script>
+
 const stringOptions = [
   'Java', 'PHP', 'NodeJs', 'Laravel', 'VueJs', 'React', 'Ruby', 'C#', 'HTML', 'CSS'
 ]
@@ -144,8 +144,9 @@ export default {
   data () {
     return {
       skill: [],
-      genderOptions: ['Male', 'Female', 'Other'],
-      skillOptions: []
+      genderOptions: ['MALE', 'FEMALE', 'UNKNOWN'],
+      skillOptions: [],
+      registerFreelancer: {}
     }
   },
   methods: {
@@ -160,6 +161,25 @@ export default {
         const needle = val.toLowerCase()
         this.skillOptions = stringOptions.filter(v => v.toLowerCase().indexOf(needle) > -1)
       })
+    },
+    submit () {
+      this.registerFreelancer.language = this.registerFreelancer.language.toString()
+      console.log(localStorage.getItem(process.env.TOKEN_NAME))
+      fetch(process.env.SOURCE_URL + '/freelancers/register', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          Authorization: 'Bearer ' + localStorage.getItem(process.env.TOKEN_NAME)
+        },
+        body: JSON.stringify(this.registerFreelancer)
+      })
+        .then(response => response.json())
+        .then(data => {
+          window.location.href = '/freelancers'
+        })
+        .catch((error) => {
+          console.error('Error:', error)
+        })
     }
   }
 }

@@ -11,8 +11,8 @@
             <q-input outlined color="yellow-9" v-model="search" label="Some name, skill,..."/>
           </div>
           <div class="col-4">
-            <q-btn label="Find Talent" rounded type="submit" size="20px" color="yellow-9"
-                   class="q-mx-lg q-px-lg full-height"/>
+            <q-btn label="Find Talent" rounded type="button" size="20px" color="yellow-9"
+                 @click="getSearch"  class="q-mx-lg q-px-lg full-height"/>
           </div>
         </div>
         <p class="trusted">Trusted by</p>
@@ -144,7 +144,17 @@
 
 <script>
 export default {
-  name: 'Homepage'
+  name: 'Homepage',
+  data () {
+    return {
+      search: ''
+    }
+  },
+  methods: {
+    getSearch () {
+      window.location.href = `/freelancers?search=${this.search}`
+    }
+  }
 }
 </script>
 
