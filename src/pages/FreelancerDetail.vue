@@ -204,11 +204,13 @@
               </q-icon>
             </template>
           </q-input>
+          <div class="text-h6">Type</div>
+          <q-select v-model="job.type" :options="options" :rules="[val => !!val || 'Field is required']"/>
         </q-card-section>
 
         <q-card-actions align="right" class="text-primary">
           <q-btn flat label="Cancel" v-close-popup />
-          <q-btn flat label="Create Job" v-close-popup />
+          <q-btn flat label="Create Job" v-close-popup @click="createJob"/>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -218,6 +220,7 @@
 <script>
 import axios from 'axios'
 import StarRating from 'vue-star-rating'
+import { mapState } from 'vuex'
 
 export default {
   name: 'FreelancerDetail',
@@ -237,8 +240,12 @@ export default {
         subject: '',
         description: '',
         salary: 0,
-        response_date: ''
-      }
+        response_date: '',
+        type: ''
+      },
+      options: [
+        'Hour', 'Product'
+      ]
     }
   },
   methods: {
@@ -250,9 +257,29 @@ export default {
           console.log(err)
         })
     },
-    test () {
-      console.log(123)
+    createJob () {
+      axios.post(process.env.API_URL + '/job', {
+        salary: this.job.salary,
+        subject: this.job.subject,
+        description: this.job.description,
+        type: this.job.type === 'Hour' ? 1 : 2,
+        accountId: this.user.id,
+        freelancerId: this.freelancer_id
+      }, {
+        headers: {
+          Authorization: 'Bearer ' + this.access_token
+        }
+      }).then(res => {
+        this.$router.push({ path: '/job/' + res.data.data.id })
+      }).catch(err => {
+        console.log(err)
+      })
     }
+  },
+  computed: {
+    ...mapState('auth', [
+      'user'
+    ])
   },
   created () {
     this.loadFreelancer()
