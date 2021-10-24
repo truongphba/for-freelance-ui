@@ -154,7 +154,7 @@ export default {
       axios.get(process.env.API_URL + '/job/' + this.$route.params.job_id, {
         headers:
             {
-              Authorization: 'Bearer' + this.access_token
+              Authorization: 'Bearer ' + this.access_token
             }
       }).then(res => {
         const data = res.data
@@ -172,7 +172,7 @@ export default {
       axios.get(process.env.API_URL + '/users/information', {
         headers:
             {
-              Authorization: 'Bearer' + this.access_token
+              Authorization: 'Bearer ' + this.access_token
             }
       }).then(res => {
         this.myProfile = res.data
@@ -187,7 +187,7 @@ export default {
       axios.get('http://localhost:8088/v1/freelancers/' + freelancerId, {
         headers:
             {
-              Authorization: 'Bearer' + this.access_token
+              Authorization: 'Bearer ' + this.access_token
             }
       }).then(res => {
         this.freelancerProfile = res.data.data
@@ -199,7 +199,7 @@ export default {
       axios.get(process.env.API_URL + '/account/' + accountId, {
         headers:
             {
-              Authorization: 'Bearer' + this.access_token
+              Authorization: 'Bearer ' + this.access_token
             }
       }).then(res => {
         this.userProfile = res.data.data
