@@ -47,12 +47,12 @@
         <div class="text-body1" style="padding-left: 10px">
           {{ jobDescription }}
         </div>
-        <div class="text-subtitle1">
-          Skill required :
-        </div>
-        <q-chip dense color="primary" text-color="white" v-for="(value, index) in skills" :key="index">
-          {{ value }}
-        </q-chip>
+<!--        <div class="text-subtitle1">-->
+<!--          Skill required :-->
+<!--        </div>-->
+<!--        <q-chip dense color="primary" text-color="white" v-for="(value, index) in skills" :key="index">-->
+<!--          {{ value }}-->
+<!--        </q-chip>-->
         <div class="text-subtitle1">
           {{ isFreelancer ? 'Freelancer' : 'User' }} information :
         </div>
@@ -76,8 +76,6 @@
 </template>
 
 <script>
-let accountId
-let freelancerId
 
 import axios from 'axios'
 
@@ -85,6 +83,7 @@ export default {
   name: 'DetailJob',
   data () {
     return {
+      access_token: localStorage.getItem(process.env.TOKEN_NAME),
       userName: '',
       jobDescription: 'Good morning I am a web designer and I would like to delegate one project. I am looking for someone who master perfectly elementor. Need someone who has got a minimum sense of design, can take initiative and follow up brand identity. Thank you',
       skills: ['Laravel', 'VueJs', 'reactJs'],
@@ -130,29 +129,41 @@ export default {
       ],
       isConfirmed: true,
       isEditing: true,
-      contactInfo: {
-        username: 'Sunshine__Acid',
-        email: 'convitcon123@gmail.com',
-        phoneNumber: '01188299374'
-      },
       isFreelancer: true,
-      myProfile: {}
+      myProfile: {},
+      freelancerProfile: {},
+      userProfile: {}
+    }
+  },
+  computed: {
+    contactInfo: function () {
+      if (this.isFreelancer) {
+        return {
+          username: this.freelancerProfile.name,
+          email: this.freelancerProfile.account?.email ?? ''
+        }
+      }
+      return {
+        username: this.userProfile.username,
+        email: this.userProfile.email
+      }
     }
   },
   methods: {
-    loadFreelancer () {
+    loadJob () {
       axios.get(process.env.API_URL + '/job/' + this.$route.params.job_id, {
         headers:
             {
-              Authorization: 'Bearer fb71c24c-5560-4adf-b3f8-dd41638eb32a'
+              Authorization: 'Bearer ' + this.access_token
             }
       }).then(res => {
         const data = res.data
-        freelancerId = data.freelancerId
-        accountId = data.accountId
         this.salary = data.salary ?? 0
         this.jobDescription = data.description ?? ''
         this.jobStatus = this.allJobStatus.find(element => element.value === data.status)
+
+        this.getFreelancerProfile(data.freelancerId)
+        this.getAccountProfile(data.accountId)
       }).catch(err => {
         console.log(err)
       })
@@ -161,41 +172,44 @@ export default {
       axios.get(process.env.API_URL + '/users/information', {
         headers:
             {
-              Authorization: 'Bearer fb71c24c-5560-4adf-b3f8-dd41638eb32a'
+              Authorization: 'Bearer ' + this.access_token
             }
       }).then(res => {
         this.myProfile = res.data
+        if (this.myProfile.role !== 'FREELANCER') {
+          this.isFreelancer = false
+        }
       }).catch(err => {
         console.log(err)
       })
     },
-    getFreelancerProfile () {
-      axios.get(process.env.API_URL + '/freelancers/' + freelancerId, {
+    getFreelancerProfile (freelancerId) {
+      axios.get('http://localhost:8088/v1/freelancers/' + freelancerId, {
         headers:
             {
-              Authorization: 'Bearer fb71c24c-5560-4adf-b3f8-dd41638eb32a'
+              Authorization: 'Bearer ' + this.access_token
             }
       }).then(res => {
-        this.myProfile = res.data
+        this.freelancerProfile = res.data.data
       }).catch(err => {
         console.log(err)
       })
     },
-    getAccountProfile () {
+    getAccountProfile (accountId) {
       axios.get(process.env.API_URL + '/account/' + accountId, {
         headers:
             {
-              Authorization: 'Bearer fb71c24c-5560-4adf-b3f8-dd41638eb32a'
+              Authorization: 'Bearer ' + this.access_token
             }
       }).then(res => {
-        this.myProfile = res.data
+        this.userProfile = res.data.data
       }).catch(err => {
         console.log(err)
       })
     }
   },
   created () {
-    this.loadFreelancer()
+    this.loadJob()
     this.getMyProfile()
   }
 }
