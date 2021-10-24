@@ -270,7 +270,7 @@ export default {
           Authorization: 'Bearer ' + this.access_token
         }
       }).then(res => {
-        console.log(res)
+        this.$router.push({ path: '/job/' + res.data.data.id })
       }).catch(err => {
         console.log(err)
       })
