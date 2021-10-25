@@ -1,151 +1,186 @@
 <template>
-  <q-card style="margin: 50px auto;width: 60%; padding: 20px">
-    <q-card class="my-card">
-      <q-card-section>
-        <div class="text-h6">Wordpress designer - customize theme to create Gorgeous Business Consulting Website</div>
-        <!--        <div class="text-subtitle2">by John Doe</div>-->
-      </q-card-section>
-
-      <q-separator dark/>
-      <div style="padding-inline: 50px">
-        <div v-if="displayRate">
-          <div class="text-h6" style="padding-block: 10px">Job Feedback</div>
-          <q-separator dark/>
-          <div class="text-amber-1" style="padding-block: 10px">
-            Client's feedback
+  <div>
+    <h3 class="font-owsald">See what job you had</h3>
+    <div class="row">
+      <div class="col-md-7">
+        <div class="q-mr-md">
+          <p class="text-h4 text-yellow-9">{{ job.subject }}</p>
+          <div>
+            <q-input prefix="$"
+                     type="number"
+                     v-model="job.salary"
+                     label="Salary"
+                     :disable="salaryDisable"/>
+            <q-btn v-if="!salaryDisable" @click="submitJob()" label="Change" type="button" color="yellow-9" class="q-mt-md"/>
           </div>
-          <div v-for="(feedback,index) in clientFeedBacks" :key="index">
-            <q-rating
-                :value="feedback.rate"
-                size="2em"
-                :max="10"
-                color="green"
-            />
-
-            <div v-html="feedback.feedback"></div>
-          </div>
-        </div>
-        <q-input v-model="salary" style="max-width: 150px" label="Salary" :disable="isConfirmed"
-                 v-if="isEditing"></q-input>
-        <div v-else>
-          <div class="text-subtitle1">
-            Salary : {{ jobDescription }}
-          </div>
-        </div>
-        <q-select style="max-width: 150px" v-model="jobStatus" :options="allJobStatus" label="Job Status"
-                  v-if="isEditing"/>
-        <div v-else>
-          <div class="text-subtitle1">
-            Current Job Status : {{ jobStatus.label }}
-          </div>
-        </div>
-        <q-separator dark style="margin-top: 10px"/>
-        <div class="text-h6" style="padding-block: 10px">Detail job</div>
-        <div class="text-subtitle1">
-          Job description :
-        </div>
-        <div class="text-body1" style="padding-left: 10px">
-          {{ jobDescription }}
-        </div>
-<!--        <div class="text-subtitle1">-->
-<!--          Skill required :-->
-<!--        </div>-->
-<!--        <q-chip dense color="primary" text-color="white" v-for="(value, index) in skills" :key="index">-->
-<!--          {{ value }}-->
-<!--        </q-chip>-->
-        <div class="text-subtitle1">
-          {{ isFreelancer ? 'Freelancer' : 'User' }} information :
-        </div>
-
-        <div class="text-subtitle2">
-          <div style="padding-left: 10px">
-            Name : {{ contactInfo.username }}
-            <br>
-            Email : {{ contactInfo.email }}
+          <p class="q-mt-md" v-html="job.description">
+          </p>
+          <div class="info">
+           <div class="row">
+             <div class="col-md-4">
+               <div class="flex">
+                 <div class="q-mr-sm">
+                   <q-icon name="far fa-user"></q-icon>
+                 </div>
+                <div>
+                  <p class="q-mb-none">Name</p>
+                  <p class="info-text q-mt-none">{{ userProfile.username }}</p>
+                </div>
+               </div>
+             </div>
+             <div class="col-md-4">
+               <div class="flex">
+                 <div class="q-mr-sm">
+                   <q-icon name="far fa-envelope"></q-icon>
+                 </div>
+                 <div>
+                   <p class="q-mb-none">Email</p>
+                   <p class="info-text q-mt-none">{{ userProfile.email }}</p>
+                 </div>
+               </div>
+             </div>
+             <div class="col-md-4">
+               <div class="flex">
+                 <div class="q-mr-sm">
+                   <q-icon name="far fa-clock"></q-icon>
+                 </div>
+                 <div>
+                   <p class="q-mb-none">Timeline</p>
+                   <p class="info-text q-mt-none">{{ new Date(job.response_date).toISOString().split('T')[0] }}</p>
+                 </div>
+               </div>
+             </div>
+           </div>
           </div>
         </div>
       </div>
-
-      <q-separator dark/>
-
-      <q-card-actions>
-        <q-btn flat>Close</q-btn>
-      </q-card-actions>
-    </q-card>
-  </q-card>
+      <div class="col-md-5">
+        <div>
+          <q-card bordered class="my-card q-mb-md">
+            <q-card-section>
+              <div class="text-subtitle2">Status: <span>{{ statusConst[job.status] }}</span></div>
+            </q-card-section>
+            <q-separator inset />
+            <q-card-section>
+              <div v-if="job.status === 1">
+                <div v-if="isFreelancer">
+                  <q-btn @click="submitJob(2)" label="Get job" type="button" color="primary" class="full-width bg-yellow-9"/>
+                  <p class="skip" @click="submitJob(0)">No, skip this job</p>
+                </div>
+                <div v-else>
+                  Freelancer is confirming job.
+                </div>
+              </div>
+              <div v-else-if="job.status === 2">
+                <div v-if="isFreelancer">
+                  <q-input
+                           v-model="job.result"
+                           label="Link"/>
+                  <q-btn @click="submitJob(3)" label="Hand in" type="button" color="yellow-9" class="q-mt-md full-width"/>
+                </div>
+                <div v-else>
+                  Freelancer is doing job.
+                </div>
+              </div>
+              <div v-else-if="job.status === 3">
+                <div v-if="isFreelancer">
+                  <q-input
+                    v-model="job.result"
+                    label="Link"
+                    disable/>
+                </div>
+                <div v-else>
+                  <q-input
+                    v-model="job.result"
+                    label="Link"
+                    disable/>
+                  <q-btn @click="submitJob(4)" label="Done" type="button" color="yellow-9" class="q-mt-md full-width"/>
+                  <q-btn @click="submitJob(2)" label="Reject" type="button" color="white" text-color="black" class="q-mt-md full-width"/>
+                </div>
+              </div>
+              <div v-else-if="job.status === 4">
+                  <q-input
+                    v-model="job.result"
+                    label="Link"
+                    disable/>
+              </div>
+              <div v-else>
+                This job is canceled.
+              </div>
+            </q-card-section>
+          </q-card>
+          <q-card  style="padding: 20px">
+            <div>
+              <div style="height: 300px;overflow-y: auto; display: flex;
+  justify-content: flex-end;
+  flex-direction: column;">
+                <div  v-for="message in messages"
+                      :key="message.id" >
+                  <div v-if="message.username == user.username" style="float: right">
+                    <p class="bg-purple-6 q-pa-sm text-white" style="border-radius: 5px;display: inline-block">{{ message.text }}</p>
+                  </div>
+                  <div v-else>
+                    <p style="font-size: 11px; color: darkgray; margin-bottom: 0">{{message.username}}</p>
+                    <p class="bg-cyan-8 q-pa-sm text-white" style="border-radius: 5px;display: inline-block">{{ message.text }}</p>
+                  </div>
+                </div>
+              </div>
+              <div class="row">
+                <div class="col-md-9">
+                  <q-input
+                    color="yellow-9"
+                    v-model="showMessage"
+                    outlined
+                    class="q-mr-md"
+                  />
+                </div>
+                <div class="col-md-3">
+                  <q-btn color="primary"  @click="sendMessage" label="Send" class="full-width full-height"/>
+                </div>
+              </div>
+            </div>
+          </q-card>
+        </div>
+      </div>
+    </div>
+  </div>
 </template>
 
 <script>
 
 import axios from 'axios'
+import { mapState } from 'vuex'
+import fire from 'src/api/firebase'
 
 export default {
   name: 'DetailJob',
   data () {
     return {
       access_token: localStorage.getItem(process.env.TOKEN_NAME),
-      userName: '',
-      jobDescription: 'Good morning I am a web designer and I would like to delegate one project. I am looking for someone who master perfectly elementor. Need someone who has got a minimum sense of design, can take initiative and follow up brand identity. Thank you',
-      skills: ['Laravel', 'VueJs', 'reactJs'],
-      showMessage: '',
-      clientFeedBacks: [
-        {
-          rate: 4,
-          feedback: '"It was a pleasure to work with Peter.\n Thanks"'
-        },
-        {
-          rate: 5,
-          feedback: '"Peter Griffin .\n Thanks"'
-        }
-      ],
-      displayRate: false,
-      salary: 4000,
-      jobStatus: {
-        label: 'Pending',
-        value: 1
+      isFreelancer: false,
+      userProfile: {},
+      job: {},
+      statusConst: {
+        0: 'Cancel',
+        1: 'Pending',
+        2: 'Doing',
+        3: 'Review',
+        4: 'Done'
       },
+      showMessage: '',
       messages: [],
-      allJobStatus: [
-        {
-          label: 'Close',
-          value: 0
-        },
-        {
-          label: 'Pending',
-          value: 1
-        },
-        {
-          label: 'Doing',
-          value: 2
-        },
-        {
-          label: 'Review',
-          value: 3
-        },
-        {
-          label: 'Done',
-          value: 3
-        }
-      ],
-      isConfirmed: true,
-      isEditing: true,
-      isFreelancer: true,
-      myProfile: {},
-      freelancerProfile: {},
-      userProfile: {}
+      isConfirm: true
     }
   },
   computed: {
-    contactInfo: function () {
-      if (this.isFreelancer) {
-        return {
-          username: this.freelancerProfile.name,
-          email: this.freelancerProfile.account?.email ?? ''
-        }
-      }
-      return {
-        username: this.userProfile.username,
-        email: this.userProfile.email
+    ...mapState('auth', [
+      'user'
+    ]),
+    salaryDisable () {
+      if (this.job.status === 1) {
+        return this.isFreelancer
+      } else {
+        return true
       }
     }
   },
@@ -157,46 +192,32 @@ export default {
               Authorization: 'Bearer ' + this.access_token
             }
       }).then(res => {
-        const data = res.data
-        this.salary = data.salary ?? 0
-        this.jobDescription = data.description ?? ''
-        this.jobStatus = this.allJobStatus.find(element => element.value === data.status)
-
-        this.getFreelancerProfile(data.freelancerId)
-        this.getAccountProfile(data.accountId)
-      }).catch(err => {
-        console.log(err)
-      })
-    },
-    getMyProfile () {
-      axios.get(process.env.API_URL + '/users/information', {
-        headers:
-            {
-              Authorization: 'Bearer ' + this.access_token
-            }
-      }).then(res => {
-        this.myProfile = res.data
-        if (this.myProfile.role !== 'FREELANCER') {
-          this.isFreelancer = false
+        this.job = res.data
+        if (this.job.freelancerId === this.user.id) {
+          this.isFreelancer = true
         }
+        const viewMessage = this
+        const itemsRef = fire.database().ref('room/' + this.job.id)
+        itemsRef.on('value', snapshot => {
+          const data = snapshot.val()
+          const messages = []
+          Object.keys(data).forEach(key => {
+            messages.push({
+              id: key,
+              username: data[key].username,
+              text: data[key].text
+            })
+          })
+          viewMessage.messages = messages
+        })
+        this.getAccountProfile()
       }).catch(err => {
         console.log(err)
       })
     },
-    getFreelancerProfile (freelancerId) {
-      axios.get('http://localhost:8088/v1/freelancers/' + freelancerId, {
-        headers:
-            {
-              Authorization: 'Bearer ' + this.access_token
-            }
-      }).then(res => {
-        this.freelancerProfile = res.data.data
-      }).catch(err => {
-        console.log(err)
-      })
-    },
-    getAccountProfile (accountId) {
-      axios.get(process.env.API_URL + '/account/' + accountId, {
+    getAccountProfile () {
+      const id = this.isFreelancer === true ? this.job.accountId : this.job.freelancerId
+      axios.get(process.env.API_URL + '/account/' + id, {
         headers:
             {
               Authorization: 'Bearer ' + this.access_token
@@ -206,15 +227,60 @@ export default {
       }).catch(err => {
         console.log(err)
       })
+    },
+    sendMessage () {
+      const message = {
+        text: this.showMessage,
+        username: this.user.username
+      }
+      fire
+        .database()
+        .ref('room/' + this.job.id)
+        .push(message)
+      this.showMessage = ''
+    },
+    submitJob (status = null) {
+      if (status) {
+        this.job.status = status
+      }
+      axios.post(process.env.API_URL + '/job/update', this.job, {
+        headers: {
+          Authorization: 'Bearer ' + this.access_token
+        }
+      }).then(res => {
+      }).catch(err => {
+        console.log(err)
+      })
     }
   },
-  created () {
-    this.loadJob()
-    this.getMyProfile()
+  async mounted () {
+    await this.loadJob()
   }
 }
 </script>
 
 <style scoped>
-
+p{
+  font-size:16px;
+}
+.text-h4{
+  font-size:35px;
+}
+.info{
+  border-top: 1px solid darkgray;
+  padding-top: 10px;
+}
+.info-text{
+  font-size: 13px;
+  color: darkgray;
+}
+.skip{
+  font-size: 16px;
+  color: darkgray;
+  text-decoration: underline;
+  cursor: pointer;
+  text-align: center;
+  margin-top: 10px;
+  margin-bottom: 0;
+}
 </style>
