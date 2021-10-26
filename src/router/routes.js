@@ -54,7 +54,7 @@ const routes = [
         component: () => import('pages/Freelancers.vue')
       },
       {
-        path: '/job/:jobid',
+        path: '/job/:job_id',
         meta: {
           title: 'Detail job'
         },
