@@ -204,8 +204,6 @@
               </q-icon>
             </template>
           </q-input>
-          <div class="text-h6">Type</div>
-          <q-select v-model="job.type" :options="options" :rules="[val => !!val || 'Field is required']"/>
         </q-card-section>
 
         <q-card-actions align="right" class="text-primary">
@@ -262,7 +260,6 @@ export default {
         salary: this.job.salary,
         subject: this.job.subject,
         description: this.job.description,
-        type: this.job.type === 'Hour' ? 1 : 2,
         accountId: this.user.id,
         freelancerId: this.freelancer_id
       }, {

@@ -5,10 +5,12 @@
         <div class="col">
           <q-toolbar>
             <q-toolbar-title>
+              <router-link to="/" tag="div" style="cursor: pointer">
               <q-avatar>
                 <img src="https://cdn.quasar.dev/logo-v2/svg/logo-mono-white.svg">
               </q-avatar>
               FFLance
+              </router-link>
             </q-toolbar-title>
           </q-toolbar>
         </div>
@@ -18,7 +20,13 @@
             <q-btn label="Signup" rounded type="submit" color="white" class="text-yellow-9 q-px-lg q-mx-sm" to="/register"/>
           </q-toolbar>
           <q-toolbar style="justify-content: right" v-else>
-              <q-avatar style="cursor: pointer">
+            <q-btn stretch flat label="Find Talent"  to="/freelancers"/>
+            <q-separator dark vertical />
+            <q-btn stretch flat label="My Jobs" to="/jobs"/>
+            <q-separator dark vertical />
+            <q-btn stretch flat label="About Us" />
+            <q-separator dark vertical />
+              <q-avatar style="cursor: pointer; margin-left: 20px">
                 <img src="~assets/images/no-ava.png">
                 <q-menu style="width: 200px">
                   <q-list style="width: 200px">
