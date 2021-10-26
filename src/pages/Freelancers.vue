@@ -12,7 +12,7 @@
           <h5>Get proposals from talent like this</h5>
           <div class="row">
             <div class="col-md-6" v-for="freelancer in filteredFreelancers" :key="freelancer.id">
-              <div style="margin: 10px">
+              <div style="margin: 10px" v-if="user.freelancerDTO == null || freelancer.id !== user.freelancerDTO.id">
                 <div itemscope="itemscope" itemtype="http://schema.org/Person">
                   <div class="flex">
                     <div><img class="avatar"
@@ -43,6 +43,10 @@
                       <div>Total earnings</div>
                     </div>
                     <div class="info-income">
+                      <div><strong> {{ freelancer.totalJobDone }} </strong></div>
+                      <div>Total jobs</div>
+                    </div>
+                    <div class="info-income">
                       <div><strong> {{ freelancer.rate }} </strong></div>
                       <div>Rated</div>
                     </div>
@@ -61,6 +65,7 @@
 <script>
 import FreelancerDetail from 'pages/FreelancerDetail'
 import axios from 'axios'
+import { mapState } from 'vuex'
 export default {
   name: 'Freelancers',
   data () {
@@ -102,7 +107,10 @@ export default {
       } else {
         return this.freelancers
       }
-    }
+    },
+    ...mapState('auth', [
+      'user'
+    ])
   }
 }
 </script>

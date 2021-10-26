@@ -68,6 +68,14 @@ const routes = [
         },
         name: 'listJob',
         component: () => import('pages/ListJob.vue')
+      },
+      {
+        path: '/jobs-freelancer',
+        meta: {
+          title: 'List freelancer job'
+        },
+        name: 'listFreelancerJob',
+        component: () => import('pages/ListFreelancerJob.vue')
       }
       // {
       //   path: 'categories',

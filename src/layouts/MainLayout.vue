@@ -22,7 +22,9 @@
           <q-toolbar style="justify-content: right" v-else>
             <q-btn stretch flat label="Find Talent"  to="/freelancers"/>
             <q-separator dark vertical />
-            <q-btn stretch flat label="My Jobs" to="/jobs"/>
+            <q-btn stretch flat label="My Owner Jobs" to="/jobs"/>
+            <q-separator dark vertical />
+            <q-btn stretch flat label="My Freelancer Job" to="/jobs-freelancer"/>
             <q-separator dark vertical />
             <q-btn stretch flat label="About Us" />
             <q-separator dark vertical />
@@ -33,7 +35,7 @@
                     <q-item >
                       <q-item-section>
                         <p style="margin: 0">{{ user.username }}</p>
-                        <template v-if="freelancer && Object.keys(freelancer).length !== 0">
+                        <template v-if="user.freelancerDTO !== null">
                           <p style="font-size: 13px;color: darkgray; margin: 0">Freelancer</p>
                         </template>
                         <template v-else>
@@ -77,7 +79,6 @@
 
 <script>
 import { mapState, mapActions } from 'vuex'
-import axios from 'axios'
 
 export default {
   data () {
@@ -85,14 +86,12 @@ export default {
       left: false,
       iconArrow: null,
       show: null,
-      permission: {},
-      freelancer: {}
+      permission: {}
     }
   },
   async mounted () {
     this.iconArrow = 'expand_less'
     this.show = false
-    this.checkRole()
   },
   methods: {
     ...mapActions({
@@ -112,14 +111,6 @@ export default {
         this.show = false
         this.iconArrow = 'expand_less'
       }
-    },
-    checkRole () {
-      axios.get(process.env.SOURCE_URL + '/v1/freelancers/account/' + this.user.id).then(res => {
-        this.freelancer = res.data.data
-        console.log(res.data.data)
-      }).catch(err => {
-        console.log(err)
-      })
     }
   },
   computed: {
