@@ -1,7 +1,7 @@
 <template>
   <div>
     <h3 class="font-owsald">See what job you had</h3>
-    <div class="row">
+    <div class="row q-mb-lg">
       <div class="col-md-7">
         <div class="q-mr-md">
           <p class="text-h4 text-yellow-9">{{ job.subject }}</p>
@@ -46,7 +46,7 @@
                  </div>
                  <div>
                    <p class="q-mb-none">Timeline</p>
-                   <p class="info-text q-mt-none">{{ new Date(job.response_date).toISOString().split('T')[0] }}</p>
+                   <p class="info-text q-mt-none">{{ job.response_date ? new Date(job.response_date).toISOString().split('T')[0] : job.response_date}}</p>
                  </div>
                </div>
              </div>
@@ -111,17 +111,16 @@
           </q-card>
           <q-card  style="padding: 20px">
             <div>
-              <div style="height: 300px;overflow-y: auto; display: flex;
-  justify-content: flex-end;
-  flex-direction: column;">
-                <div  v-for="message in messages"
-                      :key="message.id" >
-                  <div v-if="message.username == user.username" style="float: right">
-                    <p class="bg-purple-6 q-pa-sm text-white" style="border-radius: 5px;display: inline-block">{{ message.text }}</p>
-                  </div>
-                  <div v-else>
-                    <p style="font-size: 11px; color: darkgray; margin-bottom: 0">{{message.username}}</p>
-                    <p class="bg-cyan-8 q-pa-sm text-white" style="border-radius: 5px;display: inline-block">{{ message.text }}</p>
+              <div class="session-textchat">
+                <div class="past-messages">
+                  <div  v-for="message in messages"
+                        :key="message.id" :class="filterClass(message.username)">
+                    <q-tooltip>
+                      {{ message.datetime }}
+                    </q-tooltip>
+                    <span class="message">
+                     {{ message.text }}
+                    </span>
                   </div>
                 </div>
               </div>
@@ -149,7 +148,7 @@
 <script>
 
 import axios from 'axios'
-import { mapState } from 'vuex'
+import { mapState, mapActions } from 'vuex'
 import fire from 'src/api/firebase'
 
 export default {
@@ -182,9 +181,20 @@ export default {
       } else {
         return true
       }
+    },
+    getCurrentDatetime () {
+      const currentDate = new Date()
+      return currentDate.getDate() + '/' +
+        (currentDate.getMonth() + 1) + '/' +
+        currentDate.getFullYear() + ' ' +
+        currentDate.getHours() + ':' +
+        currentDate.getMinutes()
     }
   },
   methods: {
+    ...mapActions({
+      getInfo: 'auth/getInfo'
+    }),
     loadJob () {
       axios.get(process.env.API_URL + '/job/' + this.$route.params.job_id, {
         headers:
@@ -193,7 +203,7 @@ export default {
             }
       }).then(res => {
         this.job = res.data
-        if (this.job.freelancerId === this.user.id) {
+        if (this.user.freelancerDTO != null && this.job.freelancerId === this.user.freelancerDTO.id) {
           this.isFreelancer = true
         }
         const viewMessage = this
@@ -201,14 +211,20 @@ export default {
         itemsRef.on('value', snapshot => {
           const data = snapshot.val()
           const messages = []
-          Object.keys(data).forEach(key => {
-            messages.push({
-              id: key,
-              username: data[key].username,
-              text: data[key].text
+          if (data) {
+            Object.keys(data).forEach(key => {
+              messages.push({
+                id: key,
+                username: data[key].username,
+                text: data[key].text,
+                datetime: data[key].datetime
+              })
             })
-          })
-          viewMessage.messages = messages
+            viewMessage.messages = messages
+          }
+        })
+        fire.database().ref('job/' + this.job.id).on('value', (snapshot) => {
+          viewMessage.job = snapshot.val()
         })
         this.getAccountProfile()
       }).catch(err => {
@@ -216,22 +232,30 @@ export default {
       })
     },
     getAccountProfile () {
-      const id = this.isFreelancer === true ? this.job.accountId : this.job.freelancerId
-      axios.get(process.env.API_URL + '/account/' + id, {
-        headers:
+      if (this.isFreelancer) {
+        axios.get(process.env.API_URL + '/account/' + this.job.accountId, {
+          headers:
             {
               Authorization: 'Bearer ' + this.access_token
             }
-      }).then(res => {
-        this.userProfile = res.data.data
-      }).catch(err => {
-        console.log(err)
-      })
+        }).then(res => {
+          this.userProfile = res.data.data
+        }).catch(err => {
+          console.log(err)
+        })
+      } else {
+        axios.get(process.env.SOURCE_URL + '/v1/freelancers/' + this.job.freelancerId).then(res => {
+          this.userProfile = res.data.data.account
+        }).catch(err => {
+          console.log(err)
+        })
+      }
     },
     sendMessage () {
       const message = {
         text: this.showMessage,
-        username: this.user.username
+        username: this.user.username,
+        datetime: this.getCurrentDatetime
       }
       fire
         .database()
@@ -248,13 +272,56 @@ export default {
           Authorization: 'Bearer ' + this.access_token
         }
       }).then(res => {
+        let text = ''
+        if (status) {
+          if (this.job.status === 2) {
+            text = 'Freelancer got a job / owner reject freelancer result'
+          } else if (this.job.status === 3) {
+            text = 'Freelancer hand in a job'
+          } else if (this.job.status === 4) {
+            text = 'Owner accepted a job'
+          } else if (this.job.status === 0) {
+            text = 'Freelancer close a job'
+          }
+        } else {
+          text = 'Owner changed salary'
+        }
+        const message = {
+          text: text,
+          username: 'system',
+          datetime: this.getCurrentDatetime
+        }
+        fire
+          .database()
+          .ref('room/' + this.job.id)
+          .push(message)
+        fire
+          .database()
+          .ref('job/' + this.job.id)
+          .set(this.job)
       }).catch(err => {
         console.log(err)
       })
+    },
+    filterClass (username) {
+      if (this.user.username === username || this.userProfile.username === username) {
+        if (this.user.username === username) {
+          return 'sender'
+        } else {
+          return 'receiver'
+        }
+      } else {
+        return 'system'
+      }
     }
   },
   async mounted () {
     await this.loadJob()
+  },
+  watch: {
+    job () {
+      this.getInfo()
+    }
   }
 }
 </script>
@@ -282,5 +349,56 @@ p{
   text-align: center;
   margin-top: 10px;
   margin-bottom: 0;
+}
+.session-textchat {
+  height: 520px;
+  background: #fff;
+}
+.session-textchat .past-messages {
+  width: 100%;
+  max-width: 980px;
+  height: 100%;
+  margin: 0 auto;
+  overflow-y: auto;
+  display: -webkit-flex;
+  display: flex;
+  -webkit-flex-direction: column;
+  flex-direction: column;
+  align-items: flex-start;
+}
+.session-textchat .past-messages > :first-child {
+  margin-top: auto !important;
+}
+.session-textchat .past-messages .receiver,
+.session-textchat .past-messages .sender {
+  flex: 0 0 47px;
+  margin: 0 0 10px;
+  -moz-border-radius: 10px;
+  -webkit-border-radius: 10px;
+  border-radius: 10px;
+}
+.session-textchat .past-messages .receiver .message,
+.session-textchat .past-messages .sender .message {
+  display: inline-block;
+  padding: 17px;
+  word-break: break-all;
+}
+.session-textchat .past-messages .receiver {
+  -webkit-align-self: flex-start;
+  align-self: flex-start;
+  background: #f4f4f4;
+  color: #535353;
+}
+.session-textchat .past-messages .sender {
+  -webkit-align-self: flex-end;
+  align-self: flex-end;
+  background: #9575cd;
+  color: white;
+}
+.session-textchat .past-messages .system{
+  margin: 0 0 10px;
+}
+.system .message{
+  color: darkgrey;
 }
 </style>

@@ -20,8 +20,7 @@
                               alt="Avatar"></div>
                     <div style="margin-left: 16px">
                       <div>
-                        <p class="freelancer-name" v-on:click.prevent="showPanel(freelancer.id)">{{freelancer.account.username}}</p>
-                        <slideout-panel></slideout-panel>
+                        <p class="freelancer-name" @click="showPanel(freelancer.id)">{{freelancer.account.username}}</p>
                       </div>
                       <div class="text-muted">
                         <p style="font-size: 16px">
@@ -55,6 +54,7 @@
                 <hr>
               </div>
             </div>
+            <slideout-panel></slideout-panel>
           </div>
         </div> <!---->
       </div>
@@ -71,20 +71,14 @@ export default {
   data () {
     return {
       freelancers: [],
+      freelancer: {},
+      jobs: [],
       searchQuery: this.$route.query.search
     }
   },
   methods: {
     showPanel (id) {
-      this.$showPanel({
-        component: FreelancerDetail,
-        openOn: 'right',
-        width: '1200px',
-        cssClass: 'detail-color',
-        props: {
-          freelancer_id: id
-        }
-      })
+      this.loadFreelancer(id)
     },
     loadFreelancers () {
       axios.get('http://localhost:8088/v1/freelancers').then(res => {
@@ -92,6 +86,30 @@ export default {
       }).catch(err => {
         console.log(err)
       })
+    },
+    loadFreelancer (id) {
+      axios.get('http://localhost:8088/v1/freelancers/' + id)
+        .then(res => {
+          this.freelancer = res.data.data
+          axios.get(process.env.SOURCE_URL + '/job/list?freelancerId=' + id).then(res => {
+            this.jobs = res.data.data
+            console.log(this.freelancer)
+            this.$showPanel({
+              component: FreelancerDetail,
+              openOn: 'right',
+              width: '1200px',
+              cssClass: 'detail-color',
+              props: {
+                freelancer: this.freelancer,
+                jobs: this.jobs
+              }
+            })
+          }).catch(err => {
+            console.log(err)
+          })
+        }).catch(err => {
+          console.log(err)
+        })
     }
   },
   created () {

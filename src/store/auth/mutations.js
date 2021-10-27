@@ -18,13 +18,13 @@ export function authError (state, err) {
 }
 
 export function authLogout (state) {
-  state.user = { }
+  state.user = {}
   state.token = ''
   state.isLoggedIn = false
 }
 
 export function getUserInfoBegin (state) {
-  state.user = { email: { value: null, status: null } }
+  state.user = {}
   state.isLoading = true
 }
 
@@ -36,5 +36,5 @@ export function getUserInfoSuccess (state, user) {
 export function getUserInfoError (state, error) {
   state.error = error
   state.isLoading = false
-  state.user = { email: { value: null, status: null } }
+  state.user = {}
 }

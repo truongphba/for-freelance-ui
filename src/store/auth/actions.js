@@ -31,6 +31,14 @@ export async function authRequest ({ commit, dispatch }, user) {
       })
   })
 }
+export async function getInfo ({ commit, dispatch }) {
+  commit('getUserInfoBegin')
+  axios.defaults.headers.common.Authorization = 'Bearer ' + localStorage.getItem(process.env.TOKEN_NAME)
+  const response = await httpClient.get('/users/information')
+  commit('authSuccess', {
+    user: response
+  })
+}
 export async function register ({ commit, dispatch }, user) {
   return new Promise((resolve, reject) => {
     axios({

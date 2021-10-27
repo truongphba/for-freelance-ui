@@ -46,7 +46,7 @@
                     <q-separator />
                     <q-item >
                       <q-item-section>
-                        <p style="margin: 0"><q-icon style="margin-right: 10px" name="fas fa-wallet" />Balance: <span class="text-green">0$</span></p>
+                        <p style="margin: 0"><q-icon style="margin-right: 10px" name="fas fa-wallet" />Balance: <span class="text-green">{{ user.amount}}$</span></p>
                       </q-item-section>
                     </q-item>
                     <q-separator />

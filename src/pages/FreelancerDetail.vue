@@ -154,7 +154,7 @@
             <template v-slot:append>
               <q-icon name="event" class="cursor-pointer">
                 <q-popup-proxy ref="qDateProxy" transition-show="scale" transition-hide="scale">
-                  <q-date v-model="job.response_date">
+                  <q-date v-model="job.response_date" :options="optionDate">
                     <div class="row items-center justify-end">
                       <q-btn v-close-popup label="Close" color="primary" flat />
                     </div>
@@ -167,7 +167,7 @@
 
         <q-card-actions align="right" class="text-primary">
           <q-btn flat label="Cancel" v-close-popup />
-          <q-btn flat label="Create Job" v-close-popup @click="createJob"/>
+          <q-btn flat label="Create Job" @click="createJob"/>
         </q-card-actions>
         <q-card-section class="q-pt-none">
           <p style="font-size: 24px; border-bottom: 1px solid darkgrey">Your canceled job</p>
@@ -195,6 +195,7 @@
 import axios from 'axios'
 import StarRating from 'vue-star-rating'
 import { mapState } from 'vuex'
+import fire from 'src/api/firebase'
 
 export default {
   name: 'FreelancerDetail',
@@ -202,11 +203,18 @@ export default {
     StarRating
   },
   props: {
-    freelancer_id: Number
+    freelancer: {
+      type: Object,
+      default: () => {
+      }
+    },
+    jobs: {
+      type: Array,
+      default: () => []
+    }
   },
   data () {
     return {
-      freelancer: {},
       tab: 'completed',
       access_token: localStorage.getItem(process.env.TOKEN_NAME),
       prompt: false,
@@ -220,24 +228,10 @@ export default {
       options: [
         'Hour', 'Product'
       ],
-      jobs: [],
       jobsUser: []
     }
   },
   methods: {
-    loadFreelancer () {
-      axios.get('http://localhost:8088/v1/freelancers/' + this.freelancer_id)
-        .then(res => {
-          this.freelancer = res.data.data
-          axios.get(process.env.SOURCE_URL + '/job/list?freelancerId=' + this.freelancer.id).then(res => {
-            this.jobs = res.data.data
-          }).catch(err => {
-            console.log(err)
-          })
-        }).catch(err => {
-          console.log(err)
-        })
-    },
     loadJobsUser () {
       axios.get(process.env.SOURCE_URL + '/job/list?accountId=' + this.user.id).then(res => {
         this.jobsUser = res.data.data
@@ -246,18 +240,25 @@ export default {
       })
     },
     createJob () {
+      console.log(this.freelancer)
       axios.post(process.env.API_URL + '/job', {
         salary: this.job.salary,
         subject: this.job.subject,
         description: this.job.description,
         accountId: this.user.id,
-        freelancerId: this.freelancer_id
+        freelancerId: this.freelancer.id
       }, {
         headers: {
           Authorization: 'Bearer ' + this.access_token
         }
       }).then(res => {
-        this.$router.push({ path: '/job/' + res.data.data.id })
+        const job = res.data.data
+        fire
+          .database()
+          .ref('job/' + res.data.data.id)
+          .set(job).then(r => {
+            this.$router.push({ path: '/job/' + job.id })
+          })
       }).catch(err => {
         console.log(err)
       })
@@ -270,7 +271,11 @@ export default {
       this.job.description = copyJob.description
       this.job.response_date = copyJob.response_date
       this.job.salary = copyJob.salary
-      console.log(this.job)
+    },
+    optionDate (date) {
+      const today = new Date()
+      const d = today.getFullYear() + '/' + (today.getMonth() + 1) + '/' + today.getDate()
+      return date >= d
     }
   },
   computed: {
@@ -293,8 +298,7 @@ export default {
       })
     }
   },
-  created () {
-    this.loadFreelancer()
+  mounted () {
     this.loadJobsUser()
   }
 }
