@@ -10,6 +10,7 @@
     "test": "echo \"No test specified\" && exit 0"
   },
   "dependencies": {
+    "@paypal/paypal-js": "^4.1.0",
     "@quasar/extras": "^1.0.0",
     "axios": "^0.18.1",
     "chart.js": "^2.9.4",
@@ -21,6 +22,7 @@
     "validator": "^13.1.17",
     "vue": "^2.6.12",
     "vue-chartjs": "^3.5.1",
+    "vue-head": "^2.2.0",
     "vue-router": "^3.4.9",
     "vue-star-rating": "^1.7.0",
     "vue2-transitions": "^0.3.0",
