@@ -18,7 +18,7 @@
               </span>
               </div>
               <div style="font-size: 18px">
-                <star-rating :read-only="true" :increment="0.5" :rating="freelancer.rate" v-bind:star-size="20"></star-rating>
+                <star-rating :read-only="true" :increment="0.5" :rating="freelancer.rate" v-bind:star-size="20" :show-rating="false"></star-rating>
               </div>
             </div>
           </div>
@@ -91,7 +91,7 @@
                           <div v-for="jobDetail in successJobs" :key="jobDetail.id">
                             <div>
                               <div class="text-h6">{{ jobDetail.subject }}</div>
-                              <div class="text-gray"><star-rating :read-only="true" :increment="0.5" :rating="jobDetail.rate" v-bind:star-size="20"></star-rating><strong>Response Date:</strong> {{ new Date(jobDetail.response_date).toISOString().split('T')[0]  }} </div>
+                              <div class="text-gray"><star-rating :read-only="true" :increment="0.5" :rating="jobDetail.rate" v-bind:star-size="20" :show-rating="false"></star-rating><strong>Response Date:</strong> {{ new Date(jobDetail.response_date).toISOString().split('T')[0]  }} </div>
                               <div class="feedback">
                                 {{ jobDetail.comment ? jobDetail.comment : 'No feedback given'}}
                               </div>
