@@ -275,7 +275,11 @@ export default {
         let text = ''
         if (status) {
           if (this.job.status === 2) {
-            text = 'Freelancer got a job / owner reject freelancer result'
+            if (this.job.result) {
+              text = 'Owner reject freelancer result'
+            } else {
+              text = 'Freelancer got a job'
+            }
           } else if (this.job.status === 3) {
             text = 'Freelancer hand in a job'
           } else if (this.job.status === 4) {
