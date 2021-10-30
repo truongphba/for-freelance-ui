@@ -76,7 +76,9 @@ const routes = [
         },
         name: 'listFreelancerJob',
         component: () => import('pages/ListFreelancerJob.vue')
-      }
+      },
+      { path: '/add-fund-detail/:amount', component: () => import('pages/AddFundDetail') },
+      { path: '/add-fund', component: () => import('pages/AddFund') }
       // {
       //   path: 'categories',
       //   meta: {

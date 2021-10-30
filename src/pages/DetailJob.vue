@@ -142,6 +142,25 @@
         </div>
       </div>
     </div>
+    <q-dialog v-model="amountAlert" persistent>
+      <q-card>
+        <q-card-section>
+          <div class="text-h6">Feedback a job</div>
+        </q-card-section>
+
+        <q-card-section class="q-pt-none">
+           <star-rating v-model="job.rate" :increment="0.5" :rating="job.rate" v-bind:star-size="30" style="justify-content: center;margin-bottom: 20px" :show-rating="false"/>
+          <q-editor
+            v-model="job.comment"
+            :definitions="{bold: {label: 'Bold', icon: null, tip: 'My bold tooltip'}}"
+          />
+        </q-card-section>
+
+        <q-card-actions align="right">
+          <q-btn flat label="Submit" color="primary" @click="submitFeedback"/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
   </div>
 </template>
 
@@ -150,9 +169,13 @@
 import axios from 'axios'
 import { mapState, mapActions } from 'vuex'
 import fire from 'src/api/firebase'
+import StarRating from 'vue-star-rating'
 
 export default {
   name: 'DetailJob',
+  components: {
+    StarRating
+  },
   data () {
     return {
       access_token: localStorage.getItem(process.env.TOKEN_NAME),
@@ -168,7 +191,9 @@ export default {
       },
       showMessage: '',
       messages: [],
-      isConfirm: true
+      isConfirm: true,
+      amountAlert: false,
+      alertText: ''
     }
   },
   computed: {
@@ -267,6 +292,8 @@ export default {
       if (status) {
         this.job.status = status
       }
+      this.job.rate = 0
+      this.job.comment = ''
       axios.post(process.env.API_URL + '/job/update', this.job, {
         headers: {
           Authorization: 'Bearer ' + this.access_token
@@ -284,6 +311,8 @@ export default {
             text = 'Freelancer hand in a job'
           } else if (this.job.status === 4) {
             text = 'Owner accepted a job'
+            this.amountAlert = true
+            console.log(this.isFreelancer)
           } else if (this.job.status === 0) {
             text = 'Freelancer close a job'
           }
@@ -317,6 +346,17 @@ export default {
       } else {
         return 'system'
       }
+    },
+    submitFeedback () {
+      axios.post(process.env.API_URL + '/job/update', this.job, {
+        headers: {
+          Authorization: 'Bearer ' + this.access_token
+        }
+      }).then(res => {
+        this.amountAlert = false
+      }).catch(err => {
+        console.log(err)
+      })
     }
   },
   async mounted () {
@@ -325,6 +365,19 @@ export default {
   watch: {
     job () {
       this.getInfo()
+      // if (this.job.status === 2) {
+      //   this.alertText = 'Your wallet has been deducted ' + this.job.salary + '$'
+      //   if (!this.isFreelancer) {
+      //     this.amountAlert = true
+      //   }
+      // } else if (this.job.status === 4) {
+      //   if (this.isFreelancer) {
+      //     this.alertText = 'Your wallet has been added ' + (this.job.salary - (this.job.salary * 0.1)) + '$'
+      //   } else {
+      //     this.alertText = 'Feedback for this job'
+      //   }
+      //   this.amountAlert = true
+      // }
     }
   }
 }
