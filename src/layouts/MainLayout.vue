@@ -45,10 +45,12 @@
                     </q-item>
                     <q-separator />
                     <q-item >
-                      <q-item-section>
-                        <p style="margin: 0"><q-icon style="margin-right: 10px" name="fas fa-wallet" />Balance: <span class="text-green">{{ user.amount}}$</span></p>
+                      <q-item-section class="flex">
+                         <p style="margin: 0"><q-icon style="margin-right: 10px" name="fas fa-wallet" />Balance: <span class="text-green">{{ user.amount}}$</span></p>
+                         <router-link to="/add-fund" tag='p' style="font-size: 13px;color: darkgray; margin: 0; text-decoration: underline; cursor: pointer">Add fund</router-link>
                       </q-item-section>
                     </q-item>
+                    <q-separator />
                     <q-separator />
                     <q-item clickable>
                       <q-item-section><p style="margin: 0"><q-icon style="margin-right: 10px" name="fas fa-user-cog" /> Setting</p></q-item-section>

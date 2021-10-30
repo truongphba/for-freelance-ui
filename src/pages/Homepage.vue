@@ -143,6 +143,8 @@
 </template>
 
 <script>
+import { mapActions } from 'vuex'
+
 export default {
   name: 'Homepage',
   data () {
@@ -151,9 +153,15 @@ export default {
     }
   },
   methods: {
+    ...mapActions({
+      getInfo: 'auth/getInfo'
+    }),
     getSearch () {
       window.location.href = `/freelancers?search=${this.search}`
     }
+  },
+  mounted () {
+    this.getInfo()
   }
 }
 </script>

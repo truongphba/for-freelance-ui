@@ -1,5 +1,6 @@
 <template>
-  <div class="q-pa-md row items-start q-gutter-md">
+  <div class="q-pa-md items-start q-gutter-md">
+    <h3 class="font-owsald" style="margin-top: 50px">Add Fund</h3>
     <q-card push bordered class="my-card">
       <q-card-section>
         <q-select style="margin-top: 10px" outlined v-model="amount" :options="amount_option"

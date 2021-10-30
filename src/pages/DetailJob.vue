@@ -73,9 +73,20 @@
               </div>
               <div v-else-if="job.status === 2">
                 <div v-if="isFreelancer">
-                  <q-input
-                           v-model="job.result"
-                           label="Link"/>
+<!--                 <div class="flex">-->
+<!--                   <p style="padding-top: 10px">Hand in type: </p>-->
+<!--                   <q-radio v-model="resultType" val="file" label="File" />-->
+<!--                   <q-radio v-model="resultType" val="link" label="Link" />-->
+<!--                 </div>-->
+<!--                  <q-input v-if="resultType === 'link'"-->
+<!--                           v-model="job.result"-->
+<!--                           label="Link"/>-->
+                  <q-file v-model="file" label="File">
+                    <template v-slot:prepend>
+                      <q-icon name="cloud_upload" />
+                    </template>
+                  </q-file>
+                  <p class="file-message" v-if="fileErrors">You must choose a file</p>
                   <q-btn @click="submitJob(3)" label="Hand in" type="button" color="yellow-9" class="q-mt-md full-width"/>
                 </div>
                 <div v-else>
@@ -84,25 +95,46 @@
               </div>
               <div v-else-if="job.status === 3">
                 <div v-if="isFreelancer">
-                  <q-input
-                    v-model="job.result"
-                    label="Link"
-                    disable/>
+                 <div class="row">
+                  <div class="col-md-9">
+                    <q-input
+                      v-model="job.result"
+                      label="File"
+                      disable/>
+                  </div>
+                  <div class="col-md-3 text-right">
+                    <q-btn @click="download" label="Download" type="button" color="green-7" class="q-mt-md" :to="downloadUrl"/>
+                  </div>
+                 </div>
                 </div>
                 <div v-else>
-                  <q-input
-                    v-model="job.result"
-                    label="Link"
-                    disable/>
+                  <div class="row">
+                    <div class="col-md-9">
+                      <q-input
+                        v-model="job.result"
+                        label="File"
+                        disable/>
+                    </div>
+                    <div class="col-md-3 text-right">
+                      <q-btn @click="download" label="Download" type="button" color="green-7" class="q-mt-md" :to="downloadUrl"/>
+                    </div>
+                  </div>
                   <q-btn @click="submitJob(4)" label="Done" type="button" color="yellow-9" class="q-mt-md full-width"/>
                   <q-btn @click="submitJob(2)" label="Reject" type="button" color="white" text-color="black" class="q-mt-md full-width"/>
                 </div>
               </div>
               <div v-else-if="job.status === 4">
-                  <q-input
-                    v-model="job.result"
-                    label="Link"
-                    disable/>
+                <div class="row">
+                  <div class="col-md-9">
+                    <q-input
+                      v-model="job.result"
+                      label="File"
+                      disable/>
+                  </div>
+                  <div class="col-md-3 text-right">
+                    <q-btn @click="download" label="Download" type="button" color="green-7" class="q-mt-md" :to="downloadUrl"/>
+                  </div>
+                </div>
               </div>
               <div v-else>
                 This job is canceled.
@@ -145,10 +177,10 @@
     <q-dialog v-model="amountAlert" persistent>
       <q-card>
         <q-card-section>
-          <div class="text-h6">Feedback a job</div>
+          <div class="text-h6">{{ this.alertText }}</div>
         </q-card-section>
 
-        <q-card-section class="q-pt-none">
+        <q-card-section class="q-pt-none" v-if="this.job.status === 4 && this.lastStatus !== this.job.status && !isFreelancer">
            <star-rating v-model="job.rate" :increment="0.5" :rating="job.rate" v-bind:star-size="30" style="justify-content: center;margin-bottom: 20px" :show-rating="false"/>
           <q-editor
             v-model="job.comment"
@@ -157,7 +189,8 @@
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn flat label="Submit" color="primary" @click="submitFeedback"/>
+          <q-btn v-if="this.job.status === 4 && this.lastStatus !== this.job.status && !isFreelancer" flat label="Submit" color="primary" @click="submitFeedback"/>
+          <q-btn v-else flat label="OK" color="primary" v-close-popup/>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -193,7 +226,12 @@ export default {
       messages: [],
       isConfirm: true,
       amountAlert: false,
-      alertText: ''
+      alertText: '',
+      lastStatus: 0,
+      fileErrors: false,
+      file: null,
+      downloadUrl: ''
+      // resultType: 'file'
     }
   },
   computed: {
@@ -228,6 +266,7 @@ export default {
             }
       }).then(res => {
         this.job = res.data
+        this.lastStatus = res.data.status
         if (this.user.freelancerDTO != null && this.job.freelancerId === this.user.freelancerDTO.id) {
           this.isFreelancer = true
         }
@@ -289,7 +328,19 @@ export default {
       this.showMessage = ''
     },
     submitJob (status = null) {
-      if (status) {
+      if (status !== null) {
+        if (status === 3) {
+          if (!this.file) {
+            this.fileErrors = true
+            return
+          }
+          const storageRef = fire.storage().ref()
+          const fileRef = storageRef.child('files/' + this.job.id + '/' + this.file.name)
+          fileRef.put(this.job.result).then((snapshot) => {
+            console.log('upload success')
+          })
+          this.job.result = this.file.name
+        }
         this.job.status = status
       }
       this.job.rate = 0
@@ -300,7 +351,7 @@ export default {
         }
       }).then(res => {
         let text = ''
-        if (status) {
+        if (status != null) {
           if (this.job.status === 2) {
             if (this.job.result) {
               text = 'Owner reject freelancer result'
@@ -311,8 +362,6 @@ export default {
             text = 'Freelancer hand in a job'
           } else if (this.job.status === 4) {
             text = 'Owner accepted a job'
-            this.amountAlert = true
-            console.log(this.isFreelancer)
           } else if (this.job.status === 0) {
             text = 'Freelancer close a job'
           }
@@ -357,6 +406,21 @@ export default {
       }).catch(err => {
         console.log(err)
       })
+    },
+    download () {
+      const storageRef = fire.storage().ref()
+      storageRef.child('/files/' + this.job.id + '/' + this.job.result).getDownloadURL()
+        .then((url) => {
+          const link = document.createElement('a')
+          link.href = url
+          link.setAttribute('download', 'image.jpg')
+          document.body.appendChild(link)
+          link.click()
+          document.body.removeChild(link)
+        })
+        .catch((error) => {
+          console.log(error)
+        })
     }
   },
   async mounted () {
@@ -365,19 +429,23 @@ export default {
   watch: {
     job () {
       this.getInfo()
-      // if (this.job.status === 2) {
-      //   this.alertText = 'Your wallet has been deducted ' + this.job.salary + '$'
-      //   if (!this.isFreelancer) {
-      //     this.amountAlert = true
-      //   }
-      // } else if (this.job.status === 4) {
-      //   if (this.isFreelancer) {
-      //     this.alertText = 'Your wallet has been added ' + (this.job.salary - (this.job.salary * 0.1)) + '$'
-      //   } else {
-      //     this.alertText = 'Feedback for this job'
-      //   }
-      //   this.amountAlert = true
-      // }
+      console.log(this.file)
+      if (this.file != null) {
+        this.job.result = this.file.name
+      }
+      if (this.job.status === 2 && this.lastStatus !== this.job.status) {
+        if (!this.isFreelancer && this.job.result == null) {
+          this.alertText = 'Your wallet has been deducted ' + this.job.salary + '$'
+          this.amountAlert = true
+        }
+      } else if (this.job.status === 4 && this.lastStatus !== this.job.status) {
+        if (this.isFreelancer) {
+          this.alertText = 'Your wallet has been added ' + (this.job.salary - (this.job.salary * 0.1)) + '$'
+        } else {
+          this.alertText = 'Feedback for this job'
+        }
+        this.amountAlert = true
+      }
     }
   }
 }
@@ -457,5 +525,8 @@ p{
 }
 .system .message{
   color: darkgrey;
+}
+.file-message{
+  color: red;
 }
 </style>

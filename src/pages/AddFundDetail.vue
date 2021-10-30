@@ -12,11 +12,14 @@
 
 <script>
 import { loadScript } from '@paypal/paypal-js'
-import { mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 
 export default {
   name: 'AddFundDetail',
   methods: {
+    ...mapActions({
+      getInfo: 'auth/getInfo'
+    }),
     addFund: async function (amount, userId) {
       let paypal
       try {
