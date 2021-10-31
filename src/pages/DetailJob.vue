@@ -119,7 +119,7 @@
                       <q-btn @click="download" label="Download" type="button" color="green-7" class="q-mt-md" :to="downloadUrl"/>
                     </div>
                   </div>
-                  <q-btn @click="submitJob(4)" label="Done" type="button" color="yellow-9" class="q-mt-md full-width"/>
+                  <q-btn @click="feedbackModal = true" label="Done" type="button" color="yellow-9" class="q-mt-md full-width"/>
                   <q-btn @click="submitJob(2)" label="Reject" type="button" color="white" text-color="black" class="q-mt-md full-width"/>
                 </div>
               </div>
@@ -179,9 +179,19 @@
         <q-card-section>
           <div class="text-h6">{{ this.alertText }}</div>
         </q-card-section>
+        <q-card-actions align="right">
+          <q-btn flat label="OK" color="primary" v-close-popup/>
+        </q-card-actions>
+      </q-card>
+    </q-dialog>
+    <q-dialog v-model="feedbackModal" persistent>
+      <q-card>
+        <q-card-section>
+          <div class="text-h6">Feedback for this job</div>
+        </q-card-section>
 
-        <q-card-section class="q-pt-none" v-if="this.job.status === 4 && this.lastStatus !== this.job.status && !isFreelancer">
-           <star-rating v-model="job.rate" :increment="0.5" :rating="job.rate" v-bind:star-size="30" style="justify-content: center;margin-bottom: 20px" :show-rating="false"/>
+        <q-card-section class="q-pt-none">
+          <star-rating v-model="job.rate" :increment="0.5" :rating="job.rate" v-bind:star-size="30" style="justify-content: center;margin-bottom: 20px" :show-rating="false"/>
           <q-editor
             v-model="job.comment"
             :definitions="{bold: {label: 'Bold', icon: null, tip: 'My bold tooltip'}}"
@@ -189,8 +199,7 @@
         </q-card-section>
 
         <q-card-actions align="right">
-          <q-btn v-if="this.job.status === 4 && this.lastStatus !== this.job.status && !isFreelancer" flat label="Submit" color="primary" @click="submitFeedback"/>
-          <q-btn v-else flat label="OK" color="primary" v-close-popup/>
+          <q-btn flat label="Submit" color="primary" @click="submitJob(4)"/>
         </q-card-actions>
       </q-card>
     </q-dialog>
@@ -230,7 +239,8 @@ export default {
       lastStatus: 0,
       fileErrors: false,
       file: null,
-      downloadUrl: ''
+      downloadUrl: '',
+      feedbackModal: false
       // resultType: 'file'
     }
   },
@@ -345,6 +355,7 @@ export default {
       }
       this.job.rate = 0
       this.job.comment = ''
+      this.feedbackModal = false
       axios.post(process.env.API_URL + '/job/update', this.job, {
         headers: {
           Authorization: 'Bearer ' + this.access_token
@@ -396,17 +407,6 @@ export default {
         return 'system'
       }
     },
-    submitFeedback () {
-      axios.post(process.env.API_URL + '/job/update', this.job, {
-        headers: {
-          Authorization: 'Bearer ' + this.access_token
-        }
-      }).then(res => {
-        this.amountAlert = false
-      }).catch(err => {
-        console.log(err)
-      })
-    },
     download () {
       const storageRef = fire.storage().ref()
       storageRef.child('/files/' + this.job.id + '/' + this.job.result).getDownloadURL()
@@ -441,10 +441,8 @@ export default {
       } else if (this.job.status === 4 && this.lastStatus !== this.job.status) {
         if (this.isFreelancer) {
           this.alertText = 'Your wallet has been added ' + (this.job.salary - (this.job.salary * 0.1)) + '$'
-        } else {
-          this.alertText = 'Feedback for this job'
+          this.amountAlert = true
         }
-        this.amountAlert = true
       }
     }
   }
