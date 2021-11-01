@@ -64,11 +64,14 @@
             <q-card-section>
               <div v-if="job.status === 1">
                 <div v-if="isFreelancer">
-                  <q-btn @click="submitJob(2)" label="Get job" type="button" color="primary" class="full-width bg-yellow-9"/>
+                  <q-btn v-if="userProfile.amount >= job.salary" @click="submitJob(2)" label="Get job" type="button" color="primary" class="full-width bg-yellow-9"/>
+                  <q-btn v-else disable label="Get job" type="button" color="primary" class="full-width bg-yellow-9"/>
+                  <p v-if="userProfile.amount < job.salary" style="text-align: center;color: red;padding-top: 5px">This job owner do not have enough money to pay this</p>
                   <p class="skip" @click="submitJob(0)">No, skip this job</p>
                 </div>
                 <div v-else>
                   Freelancer is confirming job.
+                  <p style="color: red" v-if="user.amount < job.salary">You do not have enough money to pay for this job</p>
                 </div>
               </div>
               <div v-else-if="job.status === 2">
