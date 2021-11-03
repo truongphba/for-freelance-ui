@@ -41,7 +41,7 @@ export default {
           onAuthorize: function (data, actions) {
             return actions.request.get('http://localhost:8088/job/payment/execute-payment?amount=' + amount + '&accountId=' + userId)
               .then(function (res) {
-                window.location.replace(window.location.origin)
+                window.location.replace('/add-fund/success')
               })
           }
         }, '#paypal-button')

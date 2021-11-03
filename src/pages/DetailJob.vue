@@ -154,7 +154,7 @@
                       {{ message.datetime }}
                     </q-tooltip>
                     <span class="message">
-                     {{ message.text }}
+                     {{ message.text }} {{ message.username == `system` ? `(${message.datetime})` : ``}}
                     </span>
                   </div>
                 </div>

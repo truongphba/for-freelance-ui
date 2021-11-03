@@ -78,7 +78,8 @@ const routes = [
         component: () => import('pages/ListFreelancerJob.vue')
       },
       { path: '/add-fund-detail/:amount', component: () => import('pages/AddFundDetail') },
-      { path: '/add-fund', component: () => import('pages/AddFund') }
+      { path: '/add-fund', component: () => import('pages/AddFund') },
+      { path: '/add-fund/success', component: () => import('pages/AddFundSuccess') }
     ]
   }
 ]
