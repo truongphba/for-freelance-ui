@@ -33,13 +33,13 @@ export default {
             label: 'checkout'
           },
           payment: function (data, actions) {
-            return actions.request.post('http://localhost:8088/job/payment/create-payment?amount=' + amount)
+            return actions.request.post(process.env.SOURCE_URL + '/job/payment/create-payment?amount=' + amount)
               .then(function (res) {
                 return res.id
               })
           },
           onAuthorize: function (data, actions) {
-            return actions.request.get('http://localhost:8088/job/payment/execute-payment?amount=' + amount + '&accountId=' + userId)
+            return actions.request.get(process.env.API_URL + '/job/payment/execute-payment?amount=' + amount + '&accountId=' + userId)
               .then(function (res) {
                 window.location.replace('/add-fund/success')
               })

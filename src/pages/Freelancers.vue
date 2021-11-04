@@ -81,14 +81,14 @@ export default {
       this.loadFreelancer(id)
     },
     loadFreelancers () {
-      axios.get('http://localhost:8088/v1/freelancers').then(res => {
+      axios.get(process.env.SOURCE_URL + '/v1/freelancers').then(res => {
         this.freelancers = res.data.data
       }).catch(err => {
         console.log(err)
       })
     },
     loadFreelancer (id) {
-      axios.get('http://localhost:8088/v1/freelancers/' + id)
+      axios.get(process.env.SOURCE_URL + '/v1/freelancers/' + id)
         .then(res => {
           this.freelancer = res.data.data
           axios.get(process.env.SOURCE_URL + '/job/list?freelancerId=' + id).then(res => {
