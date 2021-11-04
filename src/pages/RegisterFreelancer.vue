@@ -98,7 +98,7 @@
               prefix="$"
               type="number"
               lazy-rules
-              :rules="[ val => val && val.length > 0 || 'Please type something']"
+              :rules="[ val => val && val > 0 || 'AVG Earning must be better than 0']"
             />
           </div>
           <div class="q-gutter-md">

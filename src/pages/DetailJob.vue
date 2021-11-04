@@ -445,6 +445,9 @@ export default {
           this.amountAlert = true
         }
       }
+      if (this.job.comment == null) {
+        this.job.comment = ''
+      }
     }
   }
 }

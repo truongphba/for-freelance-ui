@@ -119,7 +119,7 @@ export default {
     filteredFreelancers () {
       if (this.searchQuery) {
         return this.freelancers.filter((item) => {
-          return this.searchQuery.toLowerCase().split(' ').every(v => item.name.toLowerCase().includes(v)) ||
+          return this.searchQuery.toLowerCase().split(' ').every(v => item.account.username.toLowerCase().includes(v)) ||
           this.searchQuery.toLowerCase().split(' ').every(v => item.language.toLowerCase().includes(v))
         })
       } else {

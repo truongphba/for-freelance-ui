@@ -32,6 +32,8 @@ export default function (/* { store, ssrContext } */) {
       localStorage.getItem(process.env.TOKEN_NAME) !== null
     )
     if (to.matched.some(record => record.meta.requiresAuth)) {
+      console.log(isLoggedIn)
+      console.log(localStorage.getItem(process.env.TOKEN_NAME))
       if (isLoggedIn) {
         next()
         return

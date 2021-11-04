@@ -92,8 +92,7 @@
                             <div>
                               <div class="text-h6">{{ jobDetail.subject }}</div>
                               <div class="text-gray"><star-rating :read-only="true" :increment="0.5" :rating="jobDetail.rate" v-bind:star-size="20" :show-rating="false"></star-rating><strong>Response Date:</strong> {{ new Date(jobDetail.response_date).toISOString().split('T')[0]  }} </div>
-                              <div class="feedback">
-                                {{ jobDetail.comment ? jobDetail.comment : 'No feedback given'}}
+                              <div class="feedback" v-html="jobDetail.comment ? jobDetail.comment : 'No feedback given'">
                               </div>
                               <div class="mt-20 mt-lg-10 text-gray">
                                 <strong>Salary:</strong> {{ jobDetail.salary }}
@@ -274,7 +273,7 @@ export default {
     },
     optionDate (date) {
       const today = new Date()
-      const d = today.getFullYear() + '/' + (today.getMonth() + 1) + '/' + today.getDate()
+      const d = today.getUTCFullYear() + '/' + ((today.getUTCMonth() + 1) < 10 ? '0' + (today.getUTCMonth() + 1) : (today.getUTCMonth() + 1)) + '/' + (today.getUTCDay() < 10 ? '0' + today.getUTCDay() : today.getUTCDay())
       return date >= d
     }
   },
