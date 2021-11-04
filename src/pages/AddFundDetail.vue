@@ -39,7 +39,7 @@ export default {
               })
           },
           onAuthorize: function (data, actions) {
-            return actions.request.get(process.env.API_URL + '/job/payment/execute-payment?amount=' + amount + '&accountId=' + userId)
+            return actions.request.get(process.env.SOURCE_URL + '/job/payment/execute-payment?amount=' + amount + '&accountId=' + userId)
               .then(function (res) {
                 window.location.replace('/add-fund/success')
               })

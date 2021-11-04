@@ -12,7 +12,7 @@
 </template>
 
 <script>
-import { mapState } from 'vuex'
+import { mapActions, mapState } from 'vuex'
 
 export default {
   name: 'AddFundSuccess',
@@ -20,6 +20,14 @@ export default {
     ...mapState('auth', [
       'user'
     ])
+  },
+  methods: {
+    ...mapActions({
+      getInfo: 'auth/getInfo'
+    })
+  },
+  mounted () {
+    this.getInfo()
   }
 }
 </script>
