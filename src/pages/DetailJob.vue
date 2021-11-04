@@ -356,14 +356,12 @@ export default {
         }
         this.job.status = status
       }
-      this.job.rate = 0
-      this.job.comment = ''
-      this.feedbackModal = false
       axios.post(process.env.API_URL + '/job/update', this.job, {
         headers: {
           Authorization: 'Bearer ' + this.access_token
         }
       }).then(res => {
+        this.feedbackModal = false
         let text = ''
         if (status != null) {
           if (this.job.status === 2) {
