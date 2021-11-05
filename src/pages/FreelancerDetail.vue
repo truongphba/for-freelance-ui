@@ -59,9 +59,7 @@
             <div style="margin: 5px 0; font-size: 24px; padding-inline: 20px">
               <strong>{{ freelancer.title }}</strong>
             </div>
-            <div style="width: 480px; font-size: 16px; padding-inline: 20px">
-              {{ freelancer.description }}
-            </div>
+            <div style="width: 480px; font-size: 16px; padding-inline: 20px" v-html="freelancer.description"/>
             <hr style="border: 0.5px solid gainsboro;">
             <div>
               <div style="font-size: 24px; padding-inline: 20px">
